@@ -56,6 +56,7 @@ const ExpenseList = ({
           title: "Errore",
           description: "Non ho potuto cancellare la spese.",
         });
+        console.log(error);
       }
     }
   };

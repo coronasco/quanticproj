@@ -14,16 +14,18 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { ChartData, ChartDataset } from "chart.js";
 
 // Înregistrăm modulele necesare pentru Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const MonthlyChart = () => {
   const { user } = useAuth();
-  const [data, setData] = useState<{ labels: string[]; datasets: any[] }>({
+  const [data, setData] = useState<ChartData<"line", number[], string>>({
     labels: [], // Etichetele (ex: lunile)
-    datasets: [],
+    datasets: [] as ChartDataset<"line", number[]>[],
   });
+  
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

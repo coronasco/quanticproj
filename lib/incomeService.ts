@@ -11,8 +11,7 @@ import {
     query, 
     orderBy,
     startAfter,
-    limit, 
-    Timestamp,
+    limit,
     where
 } from "firebase/firestore";
 import { ExpenseType, IncomeType } from "./types";

@@ -14,7 +14,7 @@ import {
 import { ExpenseType } from '@/lib/types';
 import ExpenseList from '@/components/expenseList';
 
-const page = () => {
+const Expenses = () => {
 
     const [expenses, setExpenses] = useState<ExpenseType[]>([]);
 
@@ -45,4 +45,4 @@ const page = () => {
     );
 }
 
-export default page
+export default Expenses
