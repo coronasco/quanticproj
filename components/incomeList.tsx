@@ -33,7 +33,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
             const { income: newIncome, lastVisible: newLastVisible } = await fetchIncome(user.uid, lastVisible)
             
             // Duplicate data check
-            setIncome((prev: IncomeType[]) => {
+            setIncome((prev) => {
                 const existingIds = new Set(prev.map((item) => item.id))
                 return [...prev, ...newIncome.filter((item) => !existingIds.has(item.id))] as IncomeType[]
             })

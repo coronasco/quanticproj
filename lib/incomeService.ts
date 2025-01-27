@@ -1,5 +1,7 @@
 import { db } from "./firebase";
 import { 
+    QueryDocumentSnapshot, 
+    DocumentData,
     collection, 
     doc, 
     getDocs, 
@@ -18,8 +20,8 @@ import { IncomeType } from "./types";
 // The fetchIncome function fetches income data from the database, while the addIncome function adds income data to the database.
 export const fetchIncome = async (
     userId: string, 
-    lastVisible: IncomeType
-): Promise<{income: IncomeType[], lastVisible: unknown}> => {
+    lastVisible: QueryDocumentSnapshot<DocumentData> | null
+): Promise<{income: IncomeType[], lastVisible: QueryDocumentSnapshot<DocumentData> | null}> => {
     
     try {
         const incomeRef = collection(db, 'users', userId, 'income');
