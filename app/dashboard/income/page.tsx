@@ -12,7 +12,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog'
-import IncomeBreadcrumb from '@/components/breadcrumbs/incomeBreadcrumb'
+import IncomesBreadcrumb from '@/components/breadcrumbs/incomesBreadcrumb'
 
 const Income = () => {
     const [ income, setIncome ] = useState<IncomeType[]>([])
@@ -22,8 +22,7 @@ const Income = () => {
     }
   return (
     <div className='mt-[80px] md:mt-[80px] px-4 md:px-6'>
-        <IncomeBreadcrumb />
-        
+        <IncomesBreadcrumb />
         <Dialog>
             <DialogTrigger>
                 <Button className='mt-4'>Aggiungi Incasso</Button>

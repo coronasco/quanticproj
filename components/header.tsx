@@ -1,4 +1,4 @@
-import { List, Menu, SquareCheck, Wallet } from "lucide-react"
+import { DoorOpen, List, Menu, SquareCheck, Wallet } from "lucide-react"
 import Link from "next/link"
 import LogoutButton from "./logOutButton"
 import {
@@ -27,6 +27,10 @@ const Header = () => {
                             <li className="flex items-center hover:bg-gray-100 transition-all p-2 text-gray-500 hover:text-gray-600">
                               <Wallet className="w-5 h-5 mr-2" />
                               <Link href='/dashboard/income' className="w-full">Income</Link>
+                            </li>
+                            <li className="flex items-center hover:bg-gray-100 transition-all p-2 text-gray-500 hover:text-gray-600">
+                              <DoorOpen className="w-5 h-5 mr-2" />
+                              <Link href='/dashboard/expenses' className="w-full">Spese</Link>
                             </li>
                             <li className="flex items-center hover:bg-gray-100 transition-all p-2 text-gray-500 hover:text-gray-600">
                               <List className="w-5 h-5 mr-2" />

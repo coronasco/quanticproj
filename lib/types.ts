@@ -1,4 +1,4 @@
-import { Timestamp } from '@firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 // Income type
 export interface IncomeType {
@@ -14,3 +14,13 @@ export interface User {
     uid: string;
     email: string;
 }
+
+// Expense interface
+export interface ExpenseType {
+    id: string;
+    amount: number;
+    description: string;
+    category: string;
+    date: Date | Timestamp;
+  }
+  

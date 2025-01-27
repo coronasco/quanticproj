@@ -1,6 +1,12 @@
+import MonthlyProfit from "@/components/dashboard/monthlyProfit"
+
 const Dashboard = () => {
+
   return (
-    <div>Dashboard</div>
+    <div className="mt-[70px] md:mt-[80px]">
+      <h2>Profitto mensile di questo mese.</h2>
+      <MonthlyProfit/>      
+    </div>
   )
 }
 

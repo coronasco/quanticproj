@@ -17,7 +17,7 @@ const IncomeBreadcrumb = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/income">Incasso</BreadcrumbLink>
+            <BreadcrumbLink href="/dashboard/expenses">Spese</BreadcrumbLink>
             </BreadcrumbItem>
         </BreadcrumbList>
     </Breadcrumb>
