@@ -126,7 +126,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
                 </div>
                 <Button onClick={() => setFilterDate('')}>Reset</Button>
             </div>
-            <ul className="grid grid-cols-2 xl:grid-cols-4 gap-3 overflow-hidden">
+            <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 overflow-hidden">
                 {filteredIncome.map((item) => (
                     <li key={item.id} className="flex flex-col border hover:bg-gray-100 transition-all group">
                         {editingId === item.id ? (

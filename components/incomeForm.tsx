@@ -55,8 +55,8 @@ const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: IncomeType) 
     
     return (
         <>
-            <form onSubmit={handleSubmit} className="flex gap-3 items-end">
-                <div>
+            <form onSubmit={handleSubmit} className="flex flex-wrap items-end">
+                <div className="flex flex-col w-1/2">
                     <label htmlFor="cash" className="text-xs font-semibold">Cash</label>
                     <input 
                         type="number" 
@@ -69,7 +69,7 @@ const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: IncomeType) 
                         className="outline-none border p-2"
                     />
                 </div>
-                <div>
+                <div className="flex flex-col w-1/2">
                     <label htmlFor="pos" className="text-xs font-semibold">POS</label>
                     <input 
                         type="number" 
@@ -82,7 +82,7 @@ const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: IncomeType) 
                         className="outline-none border p-2"
                     />
                 </div>
-                <Button type="submit" className="w-full"><Plus /></Button>
+                <Button type="submit" className="w-full mt-2 md:mt-4"><Plus /></Button>
                 
             </form>
             <p className="flex items-center justify-between mt-2 border-b">Toale <span className="text-xl font-semibold flex items-center">{total}<Euro className="w-5 h-5" /></span></p>
