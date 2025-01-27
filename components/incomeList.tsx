@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { fetchIncome, deleteIncome, updateIncome } from "@/lib/incomeService";
 import { useAuth } from "@/context/authContext";
 import { IncomeType } from "@/lib/types";
@@ -25,7 +25,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
     const [ filterDate, setFilterDate ] = useState<string>('')
 
 
-    const loadIncome = async () => {
+    const loadIncome = useCallback(async () => {
         if(!user || loading) return
 
         setLoading(true)
@@ -45,7 +45,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
         } finally {
             setLoading(false);
         }
-    }
+    }, [user, loading, lastVisible, setIncome, toast])
 
     // Delete handler
     const deleteHandler = async (id: string) => {
@@ -108,7 +108,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
 
     useEffect(() => {
         loadIncome() // Load income on mount
-    }, [user])
+    }, [loadIncome])
 
     return (
         <div className="w-full mt-10">

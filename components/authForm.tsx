@@ -43,8 +43,8 @@ const AuthForm = () => {
                 toast({title: "Success", description: "LogIn Riuscito!"})
                 router.push('/dashboard')
             }
-        } catch (error: any) {
-            toast({title: "Errore", description: error.message})
+        } catch (error: unknown) {
+            toast({title: "Errore", description: (error as Error).message})
         }
 
     }
