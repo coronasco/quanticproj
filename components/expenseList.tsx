@@ -32,6 +32,7 @@ const ExpenseList = ({
           title: "Errore",
           description: "Non ho potuto caricare le spese.",
         });
+        console.log(error);
       } finally {
         setLoading(false);
       }
