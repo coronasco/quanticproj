@@ -33,9 +33,9 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
             const { income: newIncome, lastVisible: newLastVisible } = await fetchIncome(user.uid, lastVisible)
             
             // Duplicate data check
-            setIncome((prev: any[]) => {
+            setIncome((prev: IncomeType[]) => {
                 const existingIds = new Set(prev.map((item) => item.id))
-                return [...prev, ...newIncome.filter((item) => !existingIds.has(item.id))]
+                return [...prev, ...newIncome.filter((item) => !existingIds.has(item.id))] as IncomeType[]
             })
 
             setLastVisible(newLastVisible)
@@ -54,7 +54,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
         if(window.confirm("Sei sicuro di voler cancellare questo incasso?")) {
             try {
                 await deleteIncome(user.uid, id)
-                setIncome((prev: any[]) => prev.filter((item) => item.id !== id));
+                setIncome((prev) => prev.filter((item) => item.id !== id));
                 toast({ title: "Success", description: "L'incasso e stato cancellato!" });
             } catch (error) {
                 toast({title: 'Errore', description: "Non ho potuto cancellare l'incasso!"})
@@ -81,7 +81,7 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
             }
             await updateIncome(user.uid, editingId, updatedData)
 
-            setIncome((prev: any[]) =>
+            setIncome((prev) =>
                 prev.map((item) =>
                     item.id === editingId ? { ...item, ...updatedData } : item
                 )

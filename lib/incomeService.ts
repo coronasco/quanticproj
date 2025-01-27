@@ -11,20 +11,34 @@ import {
     startAfter,
     limit 
 } from "firebase/firestore";
+import { IncomeType } from "./types";
 
 // What this code does is to move the logic of fetching, adding, updating and deleting income data to a separate file.
 // This will make the code more modular and easier to test.
 // The fetchIncome function fetches income data from the database, while the addIncome function adds income data to the database.
-export const fetchIncome = async (userId: string, lastVisible: any = null, pagSize: number = 10) => {
-    const incomeRef = collection(db, 'users', userId, 'income')
-    const q = lastVisible 
-        ? query(incomeRef, orderBy('date', 'desc'), startAfter(lastVisible), limit(pagSize))
-        : query(incomeRef, orderBy('date', 'desc'), limit(pagSize))
-
-    const snapshot = await getDocs(q)
-    return {
-        income: snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data()})),
-        lastVisible: snapshot.docs[snapshot.docs.length - 1],
+export const fetchIncome = async (
+    userId: string, 
+    lastVisible: IncomeType
+): Promise<{income: IncomeType[], lastVisible: unknown}> => {
+    
+    try {
+        const incomeRef = collection(db, 'users', userId, 'income');
+        const incomeQuery = lastVisible
+          ? query(incomeRef, orderBy('date', 'desc'), startAfter(lastVisible), limit(10))
+          : query(incomeRef, orderBy('date', 'desc'), limit(10));
+    
+        const snapshot = await getDocs(incomeQuery);
+        const income = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as IncomeType[];
+    
+        const lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+    
+        return { income, lastVisible: lastVisibleDoc };
+    } catch (error) {
+        console.error('Eroare la fetchIncome:', error);
+        throw error;
     }
     
 }
