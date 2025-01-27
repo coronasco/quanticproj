@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import IncomeForm from '@/components/incomeForm'
 import IncomeList from '@/components/incomeList'
+import { IncomeType } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { 
     Dialog, 
@@ -14,9 +15,9 @@ import {
 import IncomeBreadcrumb from '@/components/breadcrumbs/incomeBreadcrumb'
 
 const Income = () => {
-    const [ income, setIncome ] = useState<any[]>([])
+    const [ income, setIncome ] = useState<IncomeType[]>([])
 
-    const handleIncomeAdded = (newIncome: any) => {
+    const handleIncomeAdded = (newIncome: IncomeType) => {
         setIncome((prev) => [newIncome, ...prev])
     }
   return (

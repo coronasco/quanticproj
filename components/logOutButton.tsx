@@ -16,8 +16,8 @@ const LogoutButton = () => {
       await logout();
       router.push("/auth");
       toast({title: "Success", description: "Disconnessione Riuscita"})
-    } catch (error: any) {
-      toast({title: "Errore", description: error.message})
+    } catch (error: unknown) {
+      toast({title: "Errore", description: (error as Error).message})
     }
   };
 

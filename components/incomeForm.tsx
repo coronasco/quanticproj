@@ -4,15 +4,16 @@ import { useState } from "react"
 import { db } from "@/lib/firebase"
 import { collection, addDoc, Timestamp } from "firebase/firestore"
 import { useAuth } from "@/context/authContext"
+import { IncomeType } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "./ui/button"
 import { Euro, Plus } from "lucide-react"
 
-const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: any) => void }) => {
+const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: IncomeType) => void }) => {
 
     const { user } = useAuth()
-    const [ cash, setCash ] = useState(0)
-    const [ pos, setPos ] = useState(0)
+    const [ cash, setCash ] = useState<number>(0)
+    const [ pos, setPos ] = useState<number>(0)
     const { toast } = useToast()
 
     const total = cash + pos
@@ -33,7 +34,7 @@ const IncomeForm = ({ onIncomeAdded }: { onIncomeAdded: (newIncome: any) => void
                 total,
                 date: Timestamp.now(),
             });
-            const newIncome = {
+            const newIncome: IncomeType = {
                 id: docRef.id,
                 cash, 
                 pos,

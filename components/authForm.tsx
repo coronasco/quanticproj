@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "fire
 import { auth, db } from "@/lib/firebase";
 import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from "next/navigation";
+import { IncomeType } from "@/lib/types";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 

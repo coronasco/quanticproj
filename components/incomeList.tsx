@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { fetchIncome, deleteIncome, updateIncome } from "@/lib/incomeService";
 import { useAuth } from "@/context/authContext";
+import { IncomeType } from "@/lib/types";
 import { CreditCard, Edit, Euro, HandCoins, Save, Trash, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "./ui/badge";
 import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { Button } from "./ui/button";
 
-const IncomeList = ({ income, setIncome }: { income: any[]; setIncome: React.Dispatch<React.SetStateAction<any>> }) => {
+const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: React.Dispatch<React.SetStateAction<IncomeType[]>> }) => {
 
     const { user } = useAuth()
     const { toast } = useToast()
