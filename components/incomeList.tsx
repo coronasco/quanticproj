@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 
 const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: React.Dispatch<React.SetStateAction<IncomeType[]>> }) => {
 
+    // Get user from context
     const { user } = useAuth()
     const { toast } = useToast()
 
