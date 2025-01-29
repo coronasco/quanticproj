@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const monthName = ['Gennaio' , 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
 
-const MonthlyProfitIncome = ({month, year}: {month: number; year: number}) => {
+const MonthlyProfitIncome = ({month}: {month: number}) => {
 
     const { user } = useAuth()
     const today = new Date()

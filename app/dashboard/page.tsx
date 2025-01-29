@@ -11,7 +11,7 @@ const Dashboard = () => {
     <div className="mt-[70px] md:mt-[80px]">
       <h1 className="text-xl font-semibold p-4 md:p-6">Dashboard</h1>
       <div className="p-4 md:p-6">
-        <MonthlyProfitIncome month={month} year={year} />
+        <MonthlyProfitIncome month={month} />
       </div>
       <div className="p-4 md:p-6 mt-4">
         <MonthlyProfit />      
