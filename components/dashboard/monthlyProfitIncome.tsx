@@ -51,7 +51,7 @@ const MonthlyProfitIncome = ({month}: {month: number}) => {
 
         calculateProfit()
         
-    }, [user, selectedMonth, selectedYear])
+    }, [user, selectedMonth, selectedYear, month])
 
     const profit = income - expenses
 

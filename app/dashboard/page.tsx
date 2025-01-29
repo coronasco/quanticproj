@@ -5,7 +5,6 @@ const Dashboard = () => {
 
   const today = new Date();
   const month = today.getMonth() + 1;
-  const year = today.getFullYear();
 
   return (
     <div className="mt-[70px] md:mt-[80px]">
