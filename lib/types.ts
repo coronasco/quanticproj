@@ -24,3 +24,8 @@ export interface ExpenseType {
     date: Date | Timestamp;
   }
   
+export interface AuthUser {
+    uid: string;
+    email: string | null;
+    // displayName: string | null;
+}

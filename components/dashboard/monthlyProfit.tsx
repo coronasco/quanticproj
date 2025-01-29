@@ -16,13 +16,13 @@ import {
 import { Line } from "react-chartjs-2";
 import { ChartData, ChartDataset } from "chart.js";
 
-// Înregistrăm modulele necesare pentru Chart.js
+// Register the modules needed for Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const MonthlyChart = () => {
   const { user } = useAuth();
   const [data, setData] = useState<ChartData<"line", number[], string>>({
-    labels: [], // Etichetele (ex: lunile)
+    labels: [],
     datasets: [] as ChartDataset<"line", number[]>[],
   });
   
@@ -34,14 +34,14 @@ const MonthlyChart = () => {
 
       setLoading(true);
       try {
-        // Datele pentru ultimele 6 luni
+        // data for the last 6 months
         const today = new Date();
         const chartData = [];
         const labels = [];
 
         for (let i = 5; i >= 0; i--) {
           const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-          const month = date.getMonth() + 1; // Lunile încep de la 0
+          const month = date.getMonth() + 1;
           const year = date.getFullYear();
           const income = await fetchMonthlyIncome(user.uid, month, year);
           const expenses = await fetchMonthlyExpenses(user.uid, month, year);
@@ -50,24 +50,24 @@ const MonthlyChart = () => {
           labels.push(`${month}/${year}`);
         }
 
-        // Configurarea datelor pentru grafic
+        // data configuration for the chart component
         setData({
-          labels, // Etichetele de pe axa X (lunile)
+          labels,
           datasets: [
             {
-              label: "Venituri (€)",
+              label: "Incassi (€)",
               data: chartData.map((d) => d.income),
               borderColor: "rgba(75, 192, 192, 1)",
               backgroundColor: "rgba(75, 192, 192, 0.2)",
             },
             {
-              label: "Cheltuieli (€)",
+              label: "Spese (€)",
               data: chartData.map((d) => d.expenses),
               borderColor: "rgba(255, 99, 132, 1)",
               backgroundColor: "rgba(255, 99, 132, 0.2)",
             },
             {
-              label: "Profit (€)",
+              label: "Profitto (€)",
               data: chartData.map((d) => d.profit),
               borderColor: "rgba(54, 162, 235, 1)",
               backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -86,9 +86,8 @@ const MonthlyChart = () => {
 
   return (
     <div className="mt-6 p-4 border rounded">
-      <h3 className="text-lg font-semibold">Venituri și cheltuieli (ultimele 6 luni)</h3>
       {loading ? (
-        <p>Se încarcă...</p>
+        <p>Carico grafico...</p>
       ) : (
         <Line
           data={data}
@@ -100,7 +99,7 @@ const MonthlyChart = () => {
               },
               title: {
                 display: true,
-                text: "Grafic venituri și cheltuieli",
+                text: "Grafico incassi e spese mensili (ultimi 6 mesi)",
               },
             },
           }}
