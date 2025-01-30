@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
 import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
 import { useAuth } from "@/context/authContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Bell } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { v4 as uuidv4 } from "uuid";
 
@@ -26,15 +26,8 @@ const BillsReminder = () => {
         dueDay: 1,
     });
 
-    useEffect(() => {
-        if (user) fetchBills();
-    }, [user]);
-
-    useEffect(() => {
-        checkForReminders();
-    }, [billsList]);
-
-    const fetchBills = async () => {
+    // 📌 Memorăm `fetchBills` pentru a evita re-render-urile
+    const fetchBills = useCallback(async () => {
         if (!user) return;
         try {
             const querySnapshot = await getDocs(collection(db, `users/${user.uid}/bills`));
@@ -46,7 +39,28 @@ const BillsReminder = () => {
         } catch (error) {
             console.error("Error fetching bills:", error);
         }
-    };
+    }, [user]); // ✅ Dependență user
+
+    // 📌 Memorăm `checkForReminders` pentru a evita re-render-urile
+    const checkForReminders = useCallback(() => {
+        const today = new Date();
+        const todayDay = today.getDate();
+        billsList.forEach((bill) => {
+            if (bill.dueDay - todayDay === 1 || bill.dueDay - todayDay === 2) {
+                alert(`Reminder: ${bill.name} de ${bill.amount}€ este scadent pe data de ${bill.dueDay}`);
+            }
+        });
+    }, [billsList]); // ✅ Dependență billsList
+
+    // ✅ Acum avem `fetchBills` ca dependență validă
+    useEffect(() => {
+        if (user) fetchBills();
+    }, [user, fetchBills]);
+
+    // ✅ Acum avem `checkForReminders` ca dependență validă
+    useEffect(() => {
+        checkForReminders();
+    }, [checkForReminders]);
 
     const handleSaveBill = async () => {
         if (!user || !newBill.name || newBill.amount <= 0 || !newBill.dueDay) return;
@@ -76,16 +90,6 @@ const BillsReminder = () => {
         } catch (error) {
             console.error("Error deleting bill:", error);
         }
-    };
-
-    const checkForReminders = () => {
-        const today = new Date();
-        const todayDay = today.getDate();
-        billsList.forEach((bill) => {
-            if (bill.dueDay - todayDay === 1 || bill.dueDay - todayDay === 2) {
-                alert(`Reminder: ${bill.name} de ${bill.amount}€ este scadent pe data de ${bill.dueDay}`);
-            }
-        });
     };
 
     return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -50,11 +50,8 @@ const DailyChart = () => {
     const [chartData, setChartData] = useState<{ month: string; incasso: number; spese: number }[]>([]);
     const [trend, setTrend] = useState<number>(0);
 
-    useEffect(() => {
-        if (user) fetchMonthlyData();
-    }, [user]);
-
-    const fetchMonthlyData = async () => {
+    // 📌 Folosim `useCallback` pentru a memora funcția și a evita recrearea ei
+    const fetchMonthlyData = useCallback(async () => {
         if (!user) return;
         try {
             const incomeSnapshot = await getDocs(collection(db, `users/${user.uid}/income`));
@@ -100,7 +97,12 @@ const DailyChart = () => {
         } catch (error) {
             console.error("Errore nel recupero dei dati mensili:", error);
         }
-    };
+    }, [user]); // ✅ Memorăm funcția și evităm recrearea ei
+
+    // ✅ Acum `fetchMonthlyData` este o dependență validă
+    useEffect(() => {
+        if (user) fetchMonthlyData();
+    }, [user, fetchMonthlyData]);
 
     return (
         <Card>
