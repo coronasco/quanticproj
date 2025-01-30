@@ -1,9 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
+:root {
+  --primary-color: #4F46E5; /* Modern Indigo */
+  --secondary-color: #22D3EE; /* Vibrant Cyan */
+  --text-color: #1E293B; /* Soft Dark Blue */
+  --paragraph-color: #475569; /* Muted Grayish Blue */
+  --background-light: #F8FAFC; /* Almost White */
+  --background-dark: #1E293B; /* Deep Blue */
+}
+
+[data-theme='dark'] {
+  --primary-color: #6366F1; /* Soft Lavander */
+  --secondary-color: #FACC15; /* Pastel Yellow */
+  --text-color: #F9FAFB; /* Light Text */
+  --paragraph-color: #CBD5E1; /* Soft Light Gray */
+  --background-light: #111827; /* Darker Blue Black */
+  --background-dark: #0F172A; /* Navy Deep */
+}
+
+header {
+  background-color: #F8FAFC;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-light);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+p {
+  color: var(--paragraph-color);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 @layer utilities {
@@ -75,19 +114,4 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* Exemple de stilizare */
-.react-hot-toast {
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  border-radius: 8px;
-}
-.react-hot-toast--success {
-  background-color: #4caf50;
-  color: #fff;
-}
-.react-hot-toast--error {
-  background-color: #f44336;
-  color: #fff;
 }
