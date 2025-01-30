@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { useAuth } from "@/context/authContext";
 
+// Mesi in italiano
 const mesiItaliani: { [key: string]: string } = {
     January: "Gennaio",
     February: "Febbraio",
