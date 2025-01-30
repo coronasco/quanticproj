@@ -1,3 +1,4 @@
+import DailyChart from "@/components/dashboard/dailyChart";
 import MonthlyProfit from "@/components/dashboard/monthlyProfit"
 import MonthlyProfitIncome from "@/components/dashboard/monthlyProfitIncome";
 
@@ -11,6 +12,9 @@ const Dashboard = () => {
       <h1 className="text-xl font-semibold p-4 md:p-6">Dashboard</h1>
       <div className="p-4 md:p-6">
         <MonthlyProfitIncome month={month} />
+      </div>
+      <div className="p-4 md:p-6 mt-4">
+        <DailyChart />
       </div>
       <div className="p-4 md:p-6 mt-4">
         <MonthlyProfit />      

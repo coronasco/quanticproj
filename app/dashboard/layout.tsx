@@ -11,6 +11,7 @@ import {
   ResizablePanelGroup
 } from "@/components/ui/resizable";
 import LeftSideBar from "@/components/leftSideBar";
+import SidebarReminders from "@/components/sidebarNotifications/sidebarReminders";
 
 export default function DashboardLayout({
     children,
@@ -51,8 +52,12 @@ export default function DashboardLayout({
               {children}
             </ResizablePanel>
             <ResizableHandle withHandle className="hidden lg:flex"/>
-            <ResizablePanel defaultSize={25} className="min-w-[230px] hidden lg:block">
-              <div className="hidden md:block h-screen mt-[100px]">Notification sidebar</div>
+            <ResizablePanel defaultSize={20} className="min-w-[230px] max-w-[450px] hidden lg:block">
+              <div className="hidden md:block h-screen mt-[70px]">
+                <div>
+                  <SidebarReminders />
+                </div>
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </main>     
