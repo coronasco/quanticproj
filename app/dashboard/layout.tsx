@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/resizable";
 import LeftSideBar from "@/components/leftSideBar";
 import SidebarReminders from "@/components/sidebarNotifications/sidebarReminders";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import LeftNavigation from "@/components/leftNavigation";
 
 export default function DashboardLayout({
     children,
@@ -44,23 +46,20 @@ export default function DashboardLayout({
 
     return (
       <>
-        <Header />
-        <main>
-          <ResizablePanelGroup direction="horizontal" className="w-full">
-            <LeftSideBar />
-            <ResizablePanel defaultSize={75}>
-              {children}
-            </ResizablePanel>
-            <ResizableHandle withHandle className="hidden lg:flex"/>
-            <ResizablePanel defaultSize={20} className="min-w-[230px] max-w-[450px] hidden lg:block">
-              <div className="hidden md:block h-screen mt-[70px]">
-                <div>
-                  <SidebarReminders />
-                </div>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </main>     
+        <main className="flex">
+          <div className="hidden bg-red-100 md:block">
+            <LeftNavigation />
+          </div>
+          <div className="md:hidden">
+            <Header />
+          </div>
+          <div className="m-2 bg-white rounded-lg border md:ml-[200px] w-full">
+            {children}
+          </div>
+          <div className="col-span-1 hidden lg:block">
+            <SidebarReminders />
+          </div>
+        </main>
         <Toaster />   
       </>
     );

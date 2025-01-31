@@ -4,36 +4,38 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* 🌍 Variabile Globale - Mod Clar */
 :root {
-  --primary-color: #4F46E5; /* Modern Indigo */
-  --secondary-color: #22D3EE; /* Vibrant Cyan */
-  --text-color: #1E293B; /* Soft Dark Blue */
-  --paragraph-color: #475569; /* Muted Grayish Blue */
-  --background-light: #F8FAFC; /* Almost White */
-  --background-dark: #1E293B; /* Deep Blue */
+  --primary-color: #3B82F6; /* Soft Blue */
+  --secondary-color: #10B981; /* Modern Green */
+  --accent-color: #FACC15; /* Elegant Yellow */
+  --text-color: #1F2937; /* Charcoal Gray */
+  --paragraph-color: #4B5563; /* Muted Dark Gray */
+  --background-light: #F9FAFB; /* Ultra Light Gray */
+  --background-dark: #E5E7EB; /* Soft Neutral Gray */
 }
 
+/* 🌙 Dark Mode */
 [data-theme='dark'] {
-  --primary-color: #6366F1; /* Soft Lavander */
-  --secondary-color: #FACC15; /* Pastel Yellow */
-  --text-color: #F9FAFB; /* Light Text */
-  --paragraph-color: #CBD5E1; /* Soft Light Gray */
-  --background-light: #111827; /* Darker Blue Black */
-  --background-dark: #0F172A; /* Navy Deep */
+  --primary-color: #60A5FA; /* Sky Blue */
+  --secondary-color: #34D399; /* Neon Green */
+  --accent-color: #EAB308; /* Warm Yellow */
+  --text-color: #E5E7EB; /* Soft White */
+  --paragraph-color: #9CA3AF; /* Cool Gray */
+  --background-light: #1F2937; /* Dark Gray */
+  --background-dark: #111827; /* Deep Charcoal */
 }
 
-header {
-  background-color: #F8FAFC;
-}
-
+/* ✨ Elementele Generale */
 body {
   font-family: 'Inter', sans-serif;
   color: var(--text-color);
   background-color: var(--background-light);
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  overflow-x: hidden;
 }
 
+/* 📌 Stiluri Globale */
 h1, h2, h3 {
   color: var(--primary-color);
   font-weight: 700;

@@ -1,23 +1,35 @@
-import DailyChart from "@/components/dashboard/dailyChart";
-import MonthlyProfit from "@/components/dashboard/monthlyProfit"
+import CashFlow from "@/components/dashboard/cashFlow";
+import ExpenseCategoryBar from "@/components/dashboard/expenseCategoryBar";
+import MonthlyGoal from "@/components/dashboard/monthlyGoal";
 import MonthlyProfitIncome from "@/components/dashboard/monthlyProfitIncome";
 
 const Dashboard = () => {
 
   const today = new Date();
   const month = today.getMonth() + 1;
+  const profit = 0;
 
   return (
-    <div className="mt-[70px] md:mt-[80px]">
-      <h1 className="text-xl font-semibold p-4 md:p-6">Dashboard</h1>
-      <div className="p-4 md:p-6">
-        <MonthlyProfitIncome month={month} />
+    <div className="mt-[40px] md:mt-0">
+      
+      <h1 className="text-xl font-semibold p-4 md:px-6">Dashboard</h1>  
+      <div className="px-4 md:px-6">
+        <MonthlyProfitIncome />
       </div>
-      <div className="p-4 md:p-6 mt-4">
-        <DailyChart />
+      <div className="px-4 md:p-6 mt-4 md:mt-0 flex flex-col lg:flex-row gap-2">
+        <div className="w-full">
+          <ExpenseCategoryBar />
+        </div>
+        <div className="w-full">
+          <MonthlyGoal />
+        </div>
       </div>
-      <div className="p-4 md:p-6 mt-4">
-        <MonthlyProfit />      
+      <div className="px-4 md:p-6 mt-4 md:mt-0 flex flex-col lg:flex-row gap-2">
+        <div className="w-full">
+            <CashFlow profit={profit} />
+        </div>
+        <div className="w-full"></div>
+        
       </div>
     </div>
   )

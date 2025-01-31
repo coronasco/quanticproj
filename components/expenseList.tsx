@@ -37,7 +37,7 @@ const ExpenseList = ({
         setLoading(false);
       }
     };
-
+    
     loadExpenses();
   }, [user, setExpenses, toast]);
 

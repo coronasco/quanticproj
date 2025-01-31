@@ -25,7 +25,7 @@ const Income = () => {
         <IncomesBreadcrumb />
         <Dialog>
             <DialogTrigger>
-                <Button className='mt-4'>Aggiungi Incasso</Button>
+                <Button className='mt-4' variant='custom'>Aggiungi Incasso</Button>
             </DialogTrigger>
             <DialogContent className=''>
                 <DialogHeader>

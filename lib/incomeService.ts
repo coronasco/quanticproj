@@ -1,5 +1,6 @@
 import { db } from "./firebase";
 import { 
+    onSnapshot,
     QueryDocumentSnapshot, 
     DocumentData,
     collection, 
@@ -145,57 +146,59 @@ export const updateExpense = async (userId: string, expenseId: string, updatedDa
  */
 
 // Fetch monthly report function
-export const fetchMonthlyIncome = async (userId: string, month: number, year: number): Promise<number> => {
-    try {
-        const startMonth = new Date(year, month -1, 1) // first day of the month
-        const endMonth = new Date(year, month, 0) // last day of the month
+// export const fetchMonthlyIncome = async (userId: string, month: number, year: number): Promise<number> => {
+//     try {
+//         const startMonth = new Date(year, month -1, 1) // first day of the month
+//         const endMonth = new Date(year, month, 0) // last day of the month
 
-        const incomeRef = collection(db, 'users', userId, 'income')
-        const incomeQuery = query(
-            incomeRef,
-            where("date", ">=", startMonth),
-            where("date", "<=", endMonth)
-        )
+//         const incomeRef = collection(db, 'users', userId, 'income')
+//         const incomeQuery = query(
+//             incomeRef,
+//             where("date", ">=", startMonth),
+//             where("date", "<=", endMonth)
+//         )
 
-        const snapshot = await getDocs(incomeQuery)
-        const totalIncome = snapshot.docs.reduce((sum, doc) => {
-            const data = doc.data() as IncomeType
-            return sum + data.total
-        }, 0)
+//         const snapshot = await getDocs(incomeQuery)
+//         const totalIncome = snapshot.docs.reduce((sum, doc) => {
+//             const data = doc.data() as IncomeType
+//             return sum + data.total
+//         }, 0)
 
-        return totalIncome
-    } catch (error) {
-        console.error('Eroare la fetchMonthlyIncome:', error)
-        throw error
-    }
-}
+//         return totalIncome
+//     } catch (error) {
+//         console.error('Eroare la fetchMonthlyIncome:', error)
+//         throw error
+//     }
+// }
+
+
 
 // Fetch monthly expenses function
-export const fetchMonthlyExpenses = async (
-  userId: string,
-  month: number,
-  year: number
-): Promise<number> => {
-  try {
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0);
+// export const fetchMonthlyExpenses = async (
+//   userId: string,
+//   month: number,
+//   year: number
+// ): Promise<number> => {
+//   try {
+//     const startOfMonth = new Date(year, month - 1, 1);
+//     const endOfMonth = new Date(year, month, 0);
 
-    const expenseRef = collection(db, "users", userId, "expenses");
-    const expenseQuery = query(
-      expenseRef,
-      where("date", ">=", startOfMonth),
-      where("date", "<=", endOfMonth)
-    );
+//     const expenseRef = collection(db, "users", userId, "expenses");
+//     const expenseQuery = query(
+//       expenseRef,
+//       where("date", ">=", startOfMonth),
+//       where("date", "<=", endOfMonth)
+//     );
 
-    const snapshot = await getDocs(expenseQuery);
-    const totalExpenses = snapshot.docs.reduce((sum, doc) => {
-      const data = doc.data() as ExpenseType;
-      return sum + data.amount;
-    }, 0);
+//     const snapshot = await getDocs(expenseQuery);
+//     const totalExpenses = snapshot.docs.reduce((sum, doc) => {
+//       const data = doc.data() as ExpenseType;
+//       return sum + data.amount;
+//     }, 0);
 
-    return totalExpenses;
-  } catch (error) {
-    console.error("Error fetching monthly expenses:", error);
-    throw error;
-  }
-};
+//     return totalExpenses;
+//   } catch (error) {
+//     console.error("Error fetching monthly expenses:", error);
+//     throw error;
+//   }
+// };

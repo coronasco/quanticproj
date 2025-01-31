@@ -28,7 +28,7 @@ const Expenses = () => {
         <div>
           <Dialog>
             <DialogTrigger>
-              <Button className="mt-4">Aggiungi Spesa</Button>
+              <Button className="mt-4" variant='custom'>Aggiungi Spesa</Button>
             </DialogTrigger>
             <DialogContent className="">
               <DialogHeader>
