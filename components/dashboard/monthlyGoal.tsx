@@ -43,7 +43,7 @@ const MonthlyGoal = () => {
       unsubscribeGoal();
       unsubscribeIncome();
     };
-  }, [user]);
+  }, [user, today]);
 
   // 🔹 Salvăm noul obiectiv
   const handleSaveGoal = async () => {
