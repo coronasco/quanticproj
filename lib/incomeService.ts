@@ -1,6 +1,5 @@
 import { db } from "./firebase";
 import { 
-    onSnapshot,
     QueryDocumentSnapshot, 
     DocumentData,
     collection, 
@@ -13,7 +12,6 @@ import {
     orderBy,
     startAfter,
     limit,
-    where
 } from "firebase/firestore";
 import { ExpenseType, IncomeType } from "./types";
 

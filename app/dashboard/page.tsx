@@ -6,7 +6,6 @@ import MonthlyProfitIncome from "@/components/dashboard/monthlyProfitIncome";
 const Dashboard = () => {
 
   const today = new Date();
-  const month = today.getMonth() + 1;
   const profit = 0;
 
   return (

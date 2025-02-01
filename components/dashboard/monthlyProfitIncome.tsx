@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, onSnapshot, query, Timestamp, where } from "firebase/firestore";
+import { collection, onSnapshot, query, Timestamp, where } from "firebase/firestore";
 import { useAuth } from "@/context/authContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
@@ -15,19 +15,19 @@ const monthName = [
   'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'
 ];
 
-// Funcție pentru a calcula zilele din lună
-const getDaysInMonth = (month: number, year: number) => new Date(year, month, 0).getDate();
+// // Funcție pentru a calcula zilele din lună
+// const getDaysInMonth = (month: number, year: number) => new Date(year, month, 0).getDate();
 
-// Fetch pentru cheltuielile fixe
-const fetchFixedExpenses = async (userId: string, month: number, year: number) => {
-  try {
-    const expensesSnapshot = await getDocs(collection(db, `users/${userId}/fixedExpenses`));
-    return expensesSnapshot.docs.map(doc => doc.data().amount) || [];
-  } catch (error) {
-    console.error("Errore nel recupero delle spese fisse:", error);
-    return [];
-  }
-};
+// // Fetch pentru cheltuielile fixe
+// const fetchFixedExpenses = async (userId: string, month: number, year: number) => {
+//   try {
+//     const expensesSnapshot = await getDocs(collection(db, `users/${userId}/fixedExpenses`));
+//     return expensesSnapshot.docs.map(doc => doc.data().amount) || [];
+//   } catch (error) {
+//     console.error("Errore nel recupero delle spese fisse:", error);
+//     return [];
+//   }
+// };
 
 const MonthlyProfitIncome = () => {
   const { user } = useAuth();
@@ -51,7 +51,10 @@ const MonthlyProfitIncome = () => {
     const startOfMonth = Timestamp.fromDate(new Date(selectedYear, selectedMonth - 1, 1));
     const endOfMonth = Timestamp.fromDate(new Date(selectedYear, selectedMonth, 0, 23, 59, 59));
 
-    console.log("📅 Fetching data from Firestore:", { startOfMonth, endOfMonth });
+    const prevMonth = selectedMonth === 1 ? 12 : selectedMonth - 1;
+    const prevYear = selectedMonth === 1 ? selectedYear - 1 : selectedYear;
+    const startOfPrevMonth = Timestamp.fromDate(new Date(prevYear, prevMonth - 1, 1));
+    const endOfPrevMonth = Timestamp.fromDate(new Date(prevYear, prevMonth, 0, 23, 59, 59));
 
     // 🔹 Ascultă modificările în real-time
     const incomeRef = collection(db, "users", user.uid, "income");
@@ -60,33 +63,48 @@ const MonthlyProfitIncome = () => {
 
     const incomeQuery = query(incomeRef, where("date", ">=", startOfMonth), where("date", "<=", endOfMonth));
     const expensesQuery = query(expensesRef, where("date", ">=", startOfMonth), where("date", "<=", endOfMonth));
+    const prevIncomeQuery = query(incomeRef, where("date", ">=", startOfPrevMonth), where("date", "<=", endOfPrevMonth));
+    const prevExpensesQuery = query(expensesRef, where("date", ">=", startOfPrevMonth), where("date", "<=", endOfPrevMonth));
 
     // 🔹 Ascultăm veniturile
     const unsubscribeIncome = onSnapshot(incomeQuery, (snapshot) => {
       const totalIncome = snapshot.docs.reduce((sum, doc) => sum + (doc.data().total || 0), 0);
-      console.log("💰 Income updated:", totalIncome);
       setIncome(totalIncome);
     });
 
-    // 🔹 Ascultăm cheltuielile normale
+    // 🔹 Ascultăm cheltuielile normale + fixe
     const unsubscribeExpenses = onSnapshot(expensesQuery, (snapshot) => {
       let totalExpenses = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
-
-      // 🔹 Ascultăm cheltuielile fixe
       const unsubscribeFixedExpenses = onSnapshot(fixedExpensesRef, (snapshot) => {
         const fixedExpensesTotal = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
-        console.log("📉 Expenses updated:", totalExpenses + fixedExpensesTotal);
         setExpenses(totalExpenses + fixedExpensesTotal);
       });
-
       return unsubscribeFixedExpenses;
     });
-
+  
+    // 🔹 Ascultăm veniturile lunii trecute
+    const unsubscribePrevIncome = onSnapshot(prevIncomeQuery, (snapshot) => {
+      const prevTotalIncome = snapshot.docs.reduce((sum, doc) => sum + (doc.data().total || 0), 0);
+      setPreviousIncome(prevTotalIncome);
+    });
+  
+    // 🔹 Ascultăm cheltuielile lunii trecute
+    const unsubscribePrevExpenses = onSnapshot(prevExpensesQuery, (snapshot) => {
+      const prevTotalExpenses = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
+      setPreviousExpenses(prevTotalExpenses);
+    });
+  
+    // 🔹 Calculăm media zilnică
+    const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+    setDailyAverage(income / daysInMonth);
+  
     setLoading(false);
-
+  
     return () => {
       unsubscribeIncome();
       unsubscribeExpenses();
+      unsubscribePrevIncome();
+      unsubscribePrevExpenses();
     };
   }, [user, selectedMonth, selectedYear]);
 

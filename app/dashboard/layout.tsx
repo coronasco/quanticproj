@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup
-} from "@/components/ui/resizable";
-import LeftSideBar from "@/components/leftSideBar";
 import SidebarReminders from "@/components/sidebarNotifications/sidebarReminders";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import LeftNavigation from "@/components/leftNavigation";
 
 export default function DashboardLayout({
