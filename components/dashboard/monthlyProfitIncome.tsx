@@ -74,7 +74,7 @@ const MonthlyProfitIncome = () => {
 
     // 🔹 Ascultăm cheltuielile normale + fixe
     const unsubscribeExpenses = onSnapshot(expensesQuery, (snapshot) => {
-      let totalExpenses = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
+      const totalExpenses = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
       const unsubscribeFixedExpenses = onSnapshot(fixedExpensesRef, (snapshot) => {
         const fixedExpensesTotal = snapshot.docs.reduce((sum, doc) => sum + (doc.data().amount || 0), 0);
         setExpenses(totalExpenses + fixedExpensesTotal);
@@ -106,7 +106,7 @@ const MonthlyProfitIncome = () => {
       unsubscribePrevIncome();
       unsubscribePrevExpenses();
     };
-  }, [user, selectedMonth, selectedYear]);
+  }, [user, income, selectedMonth, selectedYear]);
 
   // Calculează profitul și diferențele față de luna trecută
   const profit = income - expenses;
