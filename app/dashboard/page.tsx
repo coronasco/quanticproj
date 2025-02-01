@@ -1,3 +1,5 @@
+import AddExpense from "@/components/addExpense";
+import AddIncome from "@/components/addIncome";
 import CashFlow from "@/components/dashboard/cashFlow";
 import ExpenseCategoryBar from "@/components/dashboard/expenseCategoryBar";
 import MonthlyGoal from "@/components/dashboard/monthlyGoal";
@@ -9,8 +11,13 @@ const Dashboard = () => {
 
   return (
     <div className="mt-[40px] md:mt-0">
-      
-      <h1 className="text-xl font-semibold p-4 md:px-6">Dashboard</h1>  
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold p-4 md:px-6">Dashboard</h1>  
+        <div className="flex items-center gap-2 pr-4 md:pr-6">
+          <AddIncome />
+          <AddExpense />
+        </div>
+      </div>
       <div className="px-4 md:px-6">
         <MonthlyProfitIncome />
       </div>
