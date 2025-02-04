@@ -29,6 +29,7 @@ const AuthForm = () => {
                 await setDoc(doc(db, "users", user.uid), {
                     email: user.email,
                     createdAt: new Date().toISOString(),
+                    plan: 'basic',
                     income: [],
                     shopping_list: [],
                     notifications: [],

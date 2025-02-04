@@ -9,11 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const monthNames = [
-  "Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-  "Lug", "Ago", "Set", "Ott", "Nov", "Dic"
-];
+import MonthYearSelector from "./monthYearSelector";
 
 const ExpenseList = ({
   expenses,
@@ -75,44 +71,13 @@ const ExpenseList = ({
 
   return (
     <div className="mt-6">
-      <h2 className="font-semibold border-b pb-2 flex items-center gap-1">
-        <CalendarDays className="w-5 h-5 text-blue-500" />
-        Spese - {monthNames[selectedMonth - 1]} {selectedYear}
-      </h2>
-
-      {/* 🔹 Selectoare pentru luna și anul */}
-      <div className="flex justify-between items-center my-4 w-full border-b pb-2">
-        <div className="flex gap-2">
-          <Select onValueChange={(value) => setSelectedMonth(parseInt(value))} defaultValue={selectedMonth.toString()}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Luna" />
-            </SelectTrigger>
-            <SelectContent>
-              {monthNames.map((month, index) => (
-                <SelectItem key={index} value={(index + 1).toString()}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select onValueChange={(value) => setSelectedYear(parseInt(value))} defaultValue={selectedYear.toString()}>
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder="Anno" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 5 }).map((_, index) => {
-                const year = today.getFullYear() - index;
-                return (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+      <h2 className="font-semibold border-b pb-2 mb-4 flex items-center gap-1 justify-between">
+        <div className="flex items-center gap-1">
+          <CalendarDays className="w-5 h-5 text-blue-500" />
+          Spese
         </div>
-      </div>
+        <MonthYearSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+      </h2>
 
       {/* 🔹 Skeleton Loader când se încarcă */}
       {loading ? (

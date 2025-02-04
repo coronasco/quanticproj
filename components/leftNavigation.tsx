@@ -1,14 +1,18 @@
+import { usePremium } from "@/hooks/usePremium"
 import { BadgeHelp, DoorOpen, LayoutDashboard, List, Settings, SquareCheck, Wallet } from "lucide-react"
 import Link from "next/link"
 import LogoutButton from "./logOutButton"
+import { Span } from "next/dist/trace"
+import UpgrateButton from "./upgrateButton"
 
 const LeftNavigation = () => {
+    const isPremium = usePremium()
     return (
         <div className="fixed left-0 top-0">
             <div className="flex flex-col w-[200px] h-screen">
                 <div className="p-4 md:p-6">
                     <h1 className="text-2xl">Quantic</h1>
-                    <p className="mb-10 text-xs text-gray-500">Master Finance</p>
+                    <p className="mb-10 text-xs text-gray-500">Master Finance - {isPremium ? <span className="font-semibold">Premium</span> : <span className="font-semibold">Basic</span>}</p>
                 </div>
                 <ul className="p-2">
                     <h2 className="text-xs text-gray-500 px-2 md:px-4 mb-2">General</h2>
@@ -59,7 +63,11 @@ const LeftNavigation = () => {
                         </Link>
                     </li>
                 </ul>
+                <div className="flex items-center mb-5  px-2 md:px-4 group">
+                    <UpgrateButton />
+                </div>
                 <div className="mb-5 bg-white mx-4 rounded-md border flex items-center">
+                    
                     <LogoutButton />
                 </div>
             </div>

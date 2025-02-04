@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { browserLocalPersistence, onAuthStateChanged, setPersistence, signOut, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 
@@ -32,21 +32,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { toast } = useToast()
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
+        // 🔹 Set persistence to 'local' so the user stays logged in
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                // 🔹 Listen for authentication state changes
+                const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
+                    if(currentUser) {
+                        setUser({
+                            uid: currentUser.uid,
+                            email: currentUser.email
+                        });
+                    } else {
+                        setUser(null);
+                    }
+                    setLoading(false);
+                });
 
-            if(currentUser) {
-                const mappedUser: AuthUser = {
-                    uid: currentUser.uid,
-                    email: currentUser.email
-                }
-                setUser(mappedUser)
-            }
-            else {
-                setUser(null)
-            }
-            setLoading(false)
-        })
-        return () => unsubscribe()
+                return () => unsubscribe();
+            })
+            .catch((error) => {
+                console.error("Error setting auth persistence:", error);
+            });
     }, [])
 
     const logout = async () => {

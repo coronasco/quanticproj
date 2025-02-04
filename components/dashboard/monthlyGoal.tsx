@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, onSnapshot, collection, query, where, Timestamp } from "firebase/firestore";
 import { useAuth } from "@/context/authContext";
+import { usePremium } from "@/hooks/usePremium";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { Input } from "../ui/input";
@@ -11,6 +12,7 @@ import { Button } from "../ui/button";
 
 const MonthlyGoal = () => {
   const { user } = useAuth();
+  const isPremium = usePremium();
   const today = new Date();
   const [goal, setGoal] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
@@ -58,20 +60,26 @@ const MonthlyGoal = () => {
         <CardTitle className="text-md">Obiettivo Mensile</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-500">Inserisci il tuo obiettivo di profitto per il mese.</p>
-        <div className="flex gap-2 mt-3">
-          <Input 
-            type="number" 
-            value={goal} 
-            onChange={(e) => setGoal(Number(e.target.value))} 
-            placeholder="Es: 5000" 
-          />
-          <Button onClick={handleSaveGoal}>Salva</Button>
-        </div>
-        <p className="mt-4 font-semibold text-gray-700 text-xs text-center">
-          {progress.toFixed(2)}€ / {goal.toFixed(2)}€
-        </p>
-        <Progress value={(progress / goal) * 100} className="mt-2"/>
+        {isPremium ? <>
+          <p className="text-sm text-gray-500">Inserisci il tuo obiettivo di profitto per il mese.</p>
+          <div className="flex gap-2 mt-3">
+            <Input
+              type="number"
+              value={goal}
+              onChange={(e) => setGoal(Number(e.target.value))}
+              placeholder="Es: 5000"
+            />
+            <Button onClick={handleSaveGoal}>Salva</Button>
+          </div>
+          <p className="mt-4 font-semibold text-gray-700 text-xs text-center">
+            {progress.toFixed(2)}€ / {goal.toFixed(2)}€
+          </p>
+          <Progress value={(progress / goal) * 100} className="mt-2" />
+        </> : <span className="text-sm text-gray-500">
+          Devi essere premium per usare questa funzione.
+        </span>
+        }
+
       </CardContent>
     </Card>
   );

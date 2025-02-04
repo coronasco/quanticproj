@@ -8,39 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { TrendingUp, TrendingDown, CalendarDays } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MonthYearSelector from "../monthYearSelector";
 
-// Lunile în italiană
-const monthName = [
-  'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
-  'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'
-];
-
-// // Funcție pentru a calcula zilele din lună
-// const getDaysInMonth = (month: number, year: number) => new Date(year, month, 0).getDate();
-
-// // Fetch pentru cheltuielile fixe
-// const fetchFixedExpenses = async (userId: string, month: number, year: number) => {
-//   try {
-//     const expensesSnapshot = await getDocs(collection(db, `users/${userId}/fixedExpenses`));
-//     return expensesSnapshot.docs.map(doc => doc.data().amount) || [];
-//   } catch (error) {
-//     console.error("Errore nel recupero delle spese fisse:", error);
-//     return [];
-//   }
-// };
 
 const MonthlyProfitIncome = () => {
   const { user } = useAuth();
   const today = new Date();
 
+  // States for month and year selection
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState<number>(today.getFullYear());
 
+  // States for tracking income, expenses and calculations
   const [income, setIncome] = useState<number>(0);
   const [expenses, setExpenses] = useState<number>(0);
   const [previousIncome, setPreviousIncome] = useState<number>(0);
   const [previousExpenses, setPreviousExpenses] = useState<number>(0);
-  const [dailyAverage, setDailyAverage] = useState<number>(0);
+  
+  const [lastIncomeDate, setLastIncomeDate] = useState<Date | null>(null);
+  
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -68,8 +54,19 @@ const MonthlyProfitIncome = () => {
 
     // 🔹 Ascultăm veniturile
     const unsubscribeIncome = onSnapshot(incomeQuery, (snapshot) => {
-      const totalIncome = snapshot.docs.reduce((sum, doc) => sum + (doc.data().total || 0), 0);
+      let totalIncome = snapshot.docs.reduce((sum, doc) => sum + (doc.data().total || 0), 0);
+      let latestDate: Date | null = null
+
+      snapshot.docs.forEach((doc) => {
+        const incomeDate = doc.data().date.toDate()
+        
+        if (!latestDate || incomeDate > latestDate) {
+          latestDate = incomeDate
+        }
+      })
+
       setIncome(totalIncome);
+      setLastIncomeDate(latestDate)
     });
 
     // 🔹 Ascultăm cheltuielile normale + fixe
@@ -94,10 +91,6 @@ const MonthlyProfitIncome = () => {
       setPreviousExpenses(prevTotalExpenses);
     });
   
-    // 🔹 Calculăm media zilnică
-    const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-    setDailyAverage(income / daysInMonth);
-  
     setLoading(false);
   
     return () => {
@@ -112,7 +105,13 @@ const MonthlyProfitIncome = () => {
   const profit = income - expenses;
   const previousProfit = previousIncome - previousExpenses;
 
-
+  // 🔹 Calculate daily average income based on last recorded date
+  const calculateDailyAverage = () => {
+    if (!lastIncomeDate) return 0;
+    const daysSinceFirst = (lastIncomeDate.getDate());
+    return daysSinceFirst > 0 ? income / (daysSinceFirst) : 0;
+    
+  };
 
   const calculatePercentage = (current: number, previous: number) => {
     return previous > 0 ? ((current - previous) / previous) * 100 : 0;
@@ -128,43 +127,14 @@ const MonthlyProfitIncome = () => {
         <div className="flex items-center gap-2">
           <CalendarDays className="text-blue-500 w-5 h-5" />
           <span className="text-sm font-semibold text-blue-600">
-            {monthName[selectedMonth - 1]} {selectedYear}
+            Profitto Mensile
           </span>
         </div>
-        <div className="flex gap-1">
-          <Select onValueChange={(value) => setSelectedMonth(parseInt(value))} defaultValue={selectedMonth.toString()}>
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Luna" />
-            </SelectTrigger>
-            <SelectContent>
-              {monthName.map((month, index) => (
-                <SelectItem key={index} value={(index + 1).toString()}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select onValueChange={(value) => setSelectedYear(parseInt(value))} defaultValue={selectedYear.toString()}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Anul" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 5 }).map((_, index) => {
-                const year = today.getFullYear() - index;
-                return (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-        </div>
+        <MonthYearSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
       </div>
 
       <p className="text-gray-500 text-sm mt-2">
-        Media giornaliera: <span className="font-semibold">{dailyAverage.toFixed(2)}€</span>
+        Media giornaliera: <span className="font-semibold">{calculateDailyAverage().toFixed(2)}€</span>
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">

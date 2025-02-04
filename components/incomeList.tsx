@@ -10,19 +10,13 @@ import { Badge } from "./ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Card, CardContent } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
-
-const monthNames = [
-    "Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-    "Lug", "Ago", "Set", "Ott", "Nov", "Dic"
-];
+import MonthYearSelector from "./monthYearSelector";
 
 const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: React.Dispatch<React.SetStateAction<IncomeType[]>> }) => {
 
     // Get user from context
     const { user } = useAuth()
     const { toast } = useToast()
-
-
 
     const [loading, setLoading] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -32,7 +26,6 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
     const today = new Date();
     const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth() + 1);
     const [selectedYear, setSelectedYear] = useState<number>(today.getFullYear());
-
 
     const loadIncome = useCallback(async () => {
         if (!user) return;
@@ -107,42 +100,13 @@ const IncomeList = ({ income, setIncome }: { income: IncomeType[]; setIncome: Re
 
     return (
         <div className="w-full mt-10">
-            <h2 className="font-semibold border-b pb-2 flex items-center gap-1">
-                <CalendarDays className="w-5 h-5 text-blue-500" />
-                Incassi - {monthNames[selectedMonth - 1]} {selectedYear}
-            </h2>
-            <div className="flex justify-between items-center my-4 w-full border-b pb-2">
-                <div className="flex gap-2">
-                    <Select onValueChange={(value) => setSelectedMonth(parseInt(value))} defaultValue={selectedMonth.toString()}>
-                        <SelectTrigger className="w-[120px]">
-                            <SelectValue placeholder="Luna" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {monthNames.map((month, index) => (
-                                <SelectItem key={index} value={(index + 1).toString()}>
-                                    {month}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select onValueChange={(value) => setSelectedYear(parseInt(value))} defaultValue={selectedYear.toString()}>
-                        <SelectTrigger className="w-[100px]">
-                            <SelectValue placeholder="Anno" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {Array.from({ length: 5 }).map((_, index) => {
-                                const year = today.getFullYear() - index;
-                                return (
-                                    <SelectItem key={year} value={year.toString()}>
-                                        {year}
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectContent>
-                    </Select>
+            <h2 className="font-semibold border-b mb-4 pb-2 flex items-center justify-between gap-1">
+                <div className="flex items-center gap-1">
+                    <CalendarDays className="w-5 h-5 text-blue-500" />
+                    Incassi
                 </div>
-            </div>
+                <MonthYearSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+            </h2>
             {/* 🔹 Skeleton loader dacă încă se încarcă datele */}
             {loading ? (
                 <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 overflow-hidden mb-5">
