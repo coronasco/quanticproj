@@ -10,7 +10,7 @@ const Dashboard = () => {
   const profit = 0;
 
   return (
-    <div className="mt-[40px] md:mt-0">
+    <div className="mt-[40px] lg:h-screen md:mt-0">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold p-4 md:px-6">Dashboard</h1>  
         <div className="flex items-center gap-2 pr-4 md:pr-6">

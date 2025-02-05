@@ -1,12 +1,14 @@
+import { useState } from "react"
 import { usePremium } from "@/hooks/usePremium"
-import { BadgeHelp, DoorOpen, LayoutDashboard, List, Settings, SquareCheck, Wallet } from "lucide-react"
-import Link from "next/link"
+import { BadgeHelp, ChevronDown, ChevronUp, Coffee, DoorOpen, LayoutDashboard, Lightbulb, List, ListCheck, Settings, Wallet } from "lucide-react"
 import LogoutButton from "./logOutButton"
-import { Span } from "next/dist/trace"
 import UpgrateButton from "./upgrateButton"
+import NavItem from "./navItem"
 
 const LeftNavigation = () => {
     const isPremium = usePremium()
+
+    const [isOpen, setIsOpen] = useState(false)
     return (
         <div className="fixed left-0 top-0">
             <div className="flex flex-col w-[200px] h-screen">
@@ -16,52 +18,46 @@ const LeftNavigation = () => {
                 </div>
                 <ul className="p-2">
                     <h2 className="text-xs text-gray-500 px-2 md:px-4 mb-2">General</h2>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <LayoutDashboard className="w-5 h-5 mr-2 group-hover:scale-150 group-hover:rotate-180 transition-all" />
-                        <Link href="/dashboard" className="w-full p-2">
-                            Dashboard
-                        </Link>
-                    </li>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <Wallet className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
-                        <Link href="/dashboard/income" className="w-full p-2">
-                            Incasso
-                        </Link>
-                    </li>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <DoorOpen className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
-                        <Link href="/dashboard/expenses" className="w-full p-2">
-                            Spese
-                        </Link>
-                    </li>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <List className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
-                        <Link href="/dashboard/list" className="w-full p-2">
-                            List
-                        </Link>
-                    </li>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <SquareCheck className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
-                        <Link href="/dashboard/notifications" className="w-full p-2">
-                            Notifiche
-                        </Link>
+                    <NavItem icon={<LayoutDashboard className="w-5 h-5 mr-2 group-hover:scale-150 transition-all"/>} link='/dashboard' text='Dashboard' />
+                    <NavItem icon={<Wallet className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link='/dashboard/income' text="Incasso" />
+                    <NavItem icon={<DoorOpen className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link='/dashboard/expenses' text="Spese" />
+                    
+                    <li className="relative ">
+                        <button
+                            className="flex items-center w-full justify-between hover:bg-gray-200 hover:pl-4 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group"
+                            onClick={() => setIsOpen(!isOpen)}
+                        >   
+                            <div className="flex items-center gap-1 py-2">
+                                <div>
+                                    <List className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
+                                </div>
+                                <span className="w-full ml-[1px]">Lista</span>
+                            </div>
+                            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+
+                        {/* 🔹 Dropdown menu */}
+
+                        {isOpen && (
+                            <ul className="ml-4 pl-2 text-xs border-l mt-1 space-y-1">
+                                <NavItem icon={<ListCheck className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link="/dashboard/list/shopping" text="Lista spese" />
+                                <NavItem icon={<Coffee className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link="/dashboard/list/inventory" text="Prodotti" />
+                            </ul>
+                        )}
                     </li>
 
+
+                </ul>
+                <ul className="mt-5 p-2">
+                    <h2 className="text-xs text-gray-500 px-2 md:px-4 mb-2">Finanze</h2>
+                    <NavItem icon={<Lightbulb className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link="/dashboard/reminders" text="Scadenze" />
                 </ul>
                 <ul className="mt-5 p-2 mb-auto">
                     <h2 className="text-xs text-gray-500 px-2 md:px-4 mb-2">Support</h2>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <Settings className="w-5 h-5 mr-2 group-hover:scale-150 group-hover:rotate-180 transition-all" />
-                        <Link href="/dashboard/settings" className="w-full p-2">
-                            Settings
-                        </Link>
-                    </li>
-                    <li className="flex items-center hover:bg-gray-200 hover:text-gray-800 hover:font-semibold transition-all  text-gray-500  px-2 md:px-4 rounded-md group">
-                        <BadgeHelp className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />
-                        <Link href="/dashboard/help" className="w-full p-2">
-                            Help & Center
-                        </Link>
-                    </li>
+                    
+                    <NavItem icon={<Settings className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link="/dashboard/settings" text="Impostazioni" />
+                    <NavItem icon={<BadgeHelp className="w-5 h-5 mr-2 group-hover:scale-150 transition-all" />} link="/dashboard/helpcenter" text="Help & Center" />
+                    
                 </ul>
                 <div className="flex items-center mb-5  px-2 md:px-4 group">
                     <UpgrateButton />
