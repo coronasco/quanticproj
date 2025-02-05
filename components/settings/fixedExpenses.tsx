@@ -3,18 +3,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/lib/firebase";
-import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "@/context/authContext";
-
+import { resetMonthlyPayments } from "@/lib/financeService";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash, Clock, CheckCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { Badge } from "../ui/badge";
 
 interface Expense {
     id: string;
     name: string;
     amount: number;
     expirationDate: number;
+    isPaid: boolean;
 }
 
 const FixedExpenses = () => {
@@ -48,6 +50,12 @@ const FixedExpenses = () => {
         if (user) fetchExpenses();
     }, [user, fetchExpenses]);
 
+    useEffect(() => {
+        if (user) {
+            resetMonthlyPayments(user.uid, "fixedExpenses", setExpenseList);
+        }
+    }, [user]);
+
     const handleSaveExpense = async () => {
         if (!user || !newExpense.name || !newExpense.amount || !newExpense.expirationDay) return;
 
@@ -56,6 +64,7 @@ const FixedExpenses = () => {
             name: newExpense.name,
             amount: newExpense.amount,
             expirationDate: newExpense.expirationDay,
+            isPaid: false
         };
 
         try {
@@ -82,6 +91,20 @@ const FixedExpenses = () => {
             await fetchExpenses(); // Reîncărcăm lista după ștergere
         } catch (error) {
             console.error("❌ Errore durante l'eliminazione della spesa fissa:", error);
+        }
+    };
+
+    const handleMarkAsPaid = async (expenseId: string) => {
+        if (!user) return;
+        try {
+            await updateDoc(doc(db, `users/${user.uid}/fixedExpenses`, expenseId), { isPaid: true });
+            setExpenseList(prevExpenses =>
+                prevExpenses.map(expense =>
+                    expense.id === expenseId ? { ...expense, isPaid: true } : expense
+                )
+            );
+        } catch (error) {
+            console.error("❌ Errore nel segnalare come pagato:", error);
         }
     };
 
@@ -128,13 +151,28 @@ const FixedExpenses = () => {
                         {expenseList.map((expense) => (
                             <li key={expense.id} className="flex justify-between group p-4 md:p-6 bg-white border">
                                 <div>
-                                    <h3>{expense.name}</h3>
+                                    <div className="flex gap-3 items-center mb-2">
+                                        <h3>{expense.name}</h3>
+                                        {expense.isPaid && <Badge variant='custom'>Pagato</Badge>}
+                                    </div>
                                     <div>
                                         <p>Spesa: <span className="font-semibold">{expense.amount} €</span> </p>
                                         <p className="text-xs">Il giorno {expense.expirationDate} del mese.</p>
                                     </div>
                                 </div>
-                                <Button onClick={() => handleDeleteExpense(expense.id)} variant='subCustom' className="hidden group-hover:flex">Elimina</Button>
+                                <div className="flex items-center gap-2">
+                                    {expense.isPaid ? (
+                                        ''
+                                    ) : (
+                                        <Button size="sm" onClick={() => handleMarkAsPaid(expense.id)}>
+                                            <Clock className="w-4 h-4 mr-2" />
+                                            Segna come pagato
+                                        </Button>
+                                    )}
+                                    <Button onClick={() => handleDeleteExpense(expense.id)} variant='subCustom' className="hidden group-hover:flex">
+                                        <Trash className="w-5 h-5" />
+                                    </Button>
+                                </div>
                             </li>
                         ))}
                     </ul>

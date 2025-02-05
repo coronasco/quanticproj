@@ -2,18 +2,21 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
-import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
+import { resetMonthlyPayments } from "@/lib/financeService";
 import { useAuth } from "@/context/authContext";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, Clock } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { v4 as uuidv4 } from "uuid";
+import { Badge } from "../ui/badge";
 
 interface Bill {
     id: string;
     name: string;
     amount: number;
     dueDay: number;
+    isPaid: boolean;
 }
 
 const BillsReminder = () => {
@@ -26,7 +29,7 @@ const BillsReminder = () => {
         dueDay: 1,
     });
 
-    // 📌 Memorăm `fetchBills` pentru a evita re-render-urile
+    // 📌 Fetch bills from Firebase
     const fetchBills = useCallback(async () => {
         if (!user) return;
         try {
@@ -39,28 +42,32 @@ const BillsReminder = () => {
         } catch (error) {
             console.error("Error fetching bills:", error);
         }
-    }, [user]); // ✅ Dependență user
+    }, [user]);
 
-    // 📌 Memorăm `checkForReminders` pentru a evita re-render-urile
+    // 📌 Check for reminders
     const checkForReminders = useCallback(() => {
         const today = new Date();
         const todayDay = today.getDate();
         billsList.forEach((bill) => {
             if (bill.dueDay - todayDay === 1 || bill.dueDay - todayDay === 2) {
-                alert(`Reminder: ${bill.name} de ${bill.amount}€ este scadent pe data de ${bill.dueDay}`);
+                alert(`Reminder: ${bill.name} da ${bill.amount}€ sta per scadere il ${bill.dueDay}`);
             }
         });
-    }, [billsList]); // ✅ Dependență billsList
+    }, [billsList]);
 
-    // ✅ Acum avem `fetchBills` ca dependență validă
     useEffect(() => {
         if (user) fetchBills();
     }, [user, fetchBills]);
 
-    // ✅ Acum avem `checkForReminders` ca dependență validă
     useEffect(() => {
         checkForReminders();
     }, [checkForReminders]);
+
+    useEffect(() => {
+        if (user) {
+            resetMonthlyPayments(user.uid, "fixedExpenses", setBillsList);
+        }
+    }, [user]);
 
     const handleSaveBill = async () => {
         if (!user || !newBill.name || newBill.amount <= 0 || !newBill.dueDay) return;
@@ -70,6 +77,7 @@ const BillsReminder = () => {
             name: newBill.name,
             amount: newBill.amount,
             dueDay: newBill.dueDay,
+            isPaid: false,
         };
 
         try {
@@ -91,6 +99,22 @@ const BillsReminder = () => {
             console.error("Error deleting bill:", error);
         }
     };
+
+    // Mark as paid
+    const handleMarkAsPaid = async (billId: string) => {
+        if (!user) return;
+        try {
+            await updateDoc(doc(db, `users/${user.uid}/bills`, billId), { isPaid: true });
+            setBillsList(prevBills =>
+                prevBills.map(bill =>
+                    bill.id === billId ? { ...bill, isPaid: true } : bill
+                )
+            );
+        } catch (error) {
+            console.error("Error marking bill as paid:", error);
+        }
+    };
+
 
     return (
         <div>
@@ -135,14 +159,32 @@ const BillsReminder = () => {
                         {billsList.map((bill) => (
                             <li key={bill.id} className="flex justify-between items-center border p-4 md:p-6 bg-white mt-2 group">
                                 <div>
-                                    <p className="font-semibold">{bill.name}</p>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <p className="font-semibold">{bill.name}</p>
+                                        {bill.isPaid && 
+                                            <Badge variant='custom'>
+                                                Pagato
+                                            </Badge>
+                                        }
+                                    </div>
                                     <p className="text-sm text-gray-600">
-                                        {bill.amount}€ - Scadenza il giorno {bill.dueDay}
+                                        {bill.amount}€ - {bill.isPaid ? <span>Si ripristina il primo del mese</span> : <span>Scadenza il giorno {bill.dueDay}</span>}  
                                     </p>
+                                    
                                 </div>
-                                <Button variant="destructive" onClick={() => handleDeleteBill(bill.id)} className="hidden group-hover:flex">
-                                    <Trash className="w-5 h-5" />
-                                </Button>
+                                <div className="flex gap-4 items-center">
+                                    {bill.isPaid ? (
+                                        ''
+                                    ) : (
+                                        <Button size="sm" onClick={() => handleMarkAsPaid(bill.id)}>
+                                            <Clock className="w-4 h-4 mr-2" />
+                                            Segna come pagato
+                                        </Button>
+                                    )}
+                                    <Button variant="destructive" onClick={() => handleDeleteBill(bill.id)} className="hidden group-hover:flex">
+                                        <Trash className="w-5 h-5" />
+                                    </Button>
+                                </div>
                             </li>
                         ))}
                     </ul>

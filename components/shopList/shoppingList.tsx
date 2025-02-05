@@ -174,7 +174,7 @@ const ShoppingList = () => {
 
                     {/* 🔹 Total final */}
                     <div className="mt-6 text-sm font-bold">
-                        Total: {totalPrice.toFixed(2)}€
+                        Totale: {totalPrice.toFixed(2)}€
                     </div>
                 </CardContent>
             </Card>

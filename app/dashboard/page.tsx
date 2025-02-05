@@ -1,5 +1,6 @@
 import AddExpense from "@/components/addExpense";
 import AddIncome from "@/components/addIncome";
+import Analytics from "@/components/dashboard/analytics";
 import CashFlow from "@/components/dashboard/cashFlow";
 import ExpenseCategoryBar from "@/components/dashboard/expenseCategoryBar";
 import MonthlyGoal from "@/components/dashboard/monthlyGoal";
@@ -10,34 +11,35 @@ const Dashboard = () => {
   const profit = 0;
 
   return (
-    <div className="mt-[40px] lg:h-screen md:mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold p-4 md:px-6">Dashboard</h1>  
-        <div className="flex items-center gap-2 pr-4 md:pr-6">
+    <div className="mt-[40px] md:mt-0 px-4 md:px-6 py-4">
+      {/* 🔹 Header Section */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <div className="flex gap-2">
           <AddIncome />
           <AddExpense />
         </div>
       </div>
-      <div className="px-4 md:px-6">
+
+      {/* 🔹 Profit Section */}
+      <div className="mt-4">
         <MonthlyProfitIncome />
       </div>
-      <div className="px-4 md:p-6 mt-4 md:mt-0 flex flex-col lg:flex-row gap-2">
-        <div className="w-full">
-          <ExpenseCategoryBar />
-        </div>
-        <div className="w-full">
-          <MonthlyGoal />
-        </div>
+
+      {/* 🔹 Grid Layout pentru principalele componente */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <ExpenseCategoryBar />
+        <MonthlyGoal />
       </div>
-      <div className="px-4 md:p-6 mt-4 md:mt-0 flex flex-col lg:flex-row gap-2">
-        <div className="w-full">
-            <CashFlow profit={profit} />
-        </div>
-        <div className="w-full"></div>
-        
+
+      {/* 🔹 Ultima secțiune cu Analytics și CashFlow */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <CashFlow profit={profit} />
+        <Analytics />
       </div>
     </div>
-  )
+  );
+
 }
 
 export default Dashboard
