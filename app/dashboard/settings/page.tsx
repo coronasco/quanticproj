@@ -1,24 +1,18 @@
-import BillsReminder from '@/components/settings/billsReminder'
-import FixedExpenses from '@/components/settings/fixedExpenses'
 import { Separator } from '@/components/ui/separator'
-import React from 'react'
+import Gamification from '@/components/user/gamification'
+import UserProfile from '@/components/user/userProfile'
 
 const Settings = () => {
   return (
-    <div className='mt-[70px] p-4 md:-6'>
-        <h1 className='text-lg'>Settings</h1>
-        <section className='mt-4 p-4 md:p-6 border'>
-            <h2 className='text-sm text-gray-700 mb-2'>Spese fisse</h2>
-            <p className='text-sm text-gray-500'>Aggiungi le tue spese fisse per poi ricevere notifiche di avviso.</p>
-            <Separator className='my-4' />
-            <FixedExpenses />
-        </section>
-        <section className='mt-4 p-4 md:p-6 border'>
-            <h2 className='text-sm text-gray-700 mb-2'>Promemoria bollette</h2>
-            <p className='text-sm text-gray-500'>Aggiungi le tue bollette per ricevere un promemoria prima della scadenza.</p>
-            <Separator className='my-4' />
-            <BillsReminder />
-        </section>
+    <div className='mt-[40px] md:mt-0 p-4 md:-6'>
+      <h1 className='text-lg'>Impostazioni</h1>
+      <h2 className='text-md font-semibold my-2'>Profilo</h2>
+      <UserProfile />
+      <Separator className='my-4' />
+      <Gamification />
+
+
+
     </div>
   )
 }

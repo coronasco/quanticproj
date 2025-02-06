@@ -108,6 +108,22 @@ const FixedExpenses = () => {
         }
     };
 
+    // 🔹 Mark as unpaid
+    const handleMarkAsUnpaid = async (expenseId: string) => {
+        if (!user) return;
+        try {
+            await updateDoc(doc(db, `users/${user.uid}/fixedExpenses`, expenseId), { isPaid: false });
+            setExpenseList(prevExpenses =>
+                prevExpenses.map(expense =>
+                    expense.id === expenseId ? { ...expense, isPaid: false } : expense
+                )
+            );
+        } catch (error) {
+            console.error("❌ Errore nel segnalare come non pagato:", error);
+        }
+    };
+
+
     return (
         <div>
             <Button onClick={toggle} variant="custom">
@@ -149,7 +165,7 @@ const FixedExpenses = () => {
                 ) : (
                     <ul className="flex flex-col gap-3">
                         {expenseList.map((expense) => (
-                            <li key={expense.id} className="flex justify-between group p-4 md:p-6 bg-white border">
+                            <li key={expense.id} className={`flex justify-between group p-4 md:p-6 bg-white border ${expense.isPaid ? "border-green-300" : ""}`}>
                                 <div>
                                     <div className="flex gap-3 items-center mb-2">
                                         <h3>{expense.name}</h3>
@@ -162,11 +178,14 @@ const FixedExpenses = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {expense.isPaid ? (
-                                        ''
-                                    ) : (
-                                        <Button size="sm" onClick={() => handleMarkAsPaid(expense.id)}>
+                                        <Button size="sm" variant='link' onClick={() => handleMarkAsUnpaid(expense.id)}>
                                             <Clock className="w-4 h-4 mr-2" />
-                                            Segna come pagato
+                                            Anulla
+                                        </Button>
+                                    ) : (
+                                        <Button size="sm" variant='outline' onClick={() => handleMarkAsPaid(expense.id)}>
+                                            <Clock className="w-4 h-4 mr-2" />
+                                            Paga
                                         </Button>
                                     )}
                                     <Button onClick={() => handleDeleteExpense(expense.id)} variant='subCustom' className="hidden group-hover:flex">

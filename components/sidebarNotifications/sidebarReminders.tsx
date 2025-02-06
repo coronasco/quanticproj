@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/context/authContext";
 import { CalendarDays, CreditCard } from "lucide-react";
 import Link from "next/link";
@@ -19,50 +19,66 @@ const SidebarReminders = () => {
   const { user } = useAuth();
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
-  // ✅ Corectăm `fetchReminders` și îl memorăm cu `useCallback`
-  const fetchReminders = useCallback(async () => {
+  useEffect(() => {
     if (!user) return;
-    try {
-      const billsSnapshot = await getDocs(collection(db, `users/${user.uid}/bills`));
-      const fixedExpensesSnapshot = await getDocs(collection(db, `users/${user.uid}/fixedExpenses`));
 
-      const billsData = billsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        type: "bill",
-      })) as Reminder[];
-
-      const fixedExpensesData = fixedExpensesSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
+    // ✅ Listen to changes in "bills" collection
+    const unsubscribeBills = onSnapshot(collection(db, `users/${user.uid}/bills`), (snapshot) => {
+      const billsData = snapshot.docs
+        .map((doc) => ({
           id: doc.id,
-          name: data.name,
-          amount: data.amount,
-          dueDay: data.expirationDate || 0, // ✅ Ensure it exists
-          type: "fixedExpense",
-        };
-      }) as Reminder[];
+          name: doc.data().name,
+          amount: doc.data().amount,
+          dueDay: doc.data().dueDay,
+          isPaid: doc.data().isPaid,
+          type: "bill",
+        }))
+        .filter((bill) => !bill.isPaid) as Reminder[]; // 🔹 Only unpaid bills
 
-      const allReminders = [...billsData, ...fixedExpensesData];
-      allReminders.sort((a, b) => a.dueDay - b.dueDay);
-      setReminders(allReminders);
-    } catch (error) {
-      console.error("Error fetching reminders:", error);
-    }
+      setReminders((prev) => {
+        const fixedExpenses = prev.filter((item) => item.type === "fixedExpense");
+        return [...fixedExpenses, ...billsData].sort((a, b) => a.dueDay - b.dueDay);
+      });
+    });
+
+    // ✅ Listen to changes in "fixedExpenses" collection
+    const unsubscribeFixedExpenses = onSnapshot(collection(db, `users/${user.uid}/fixedExpenses`), (snapshot) => {
+      const fixedExpensesData = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          amount: doc.data().amount,
+          dueDay: doc.data().expirationDate || 0, // ✅ Ensure it exists
+          isPaid: doc.data().isPaid || false,
+          type: "fixedExpense",
+        }))
+        .filter((expense) => !expense.isPaid) as Reminder[]; // 🔹 Only unpaid expenses
+
+      setReminders((prev) => {
+        const bills = prev.filter((item) => item.type === "bill");
+        return [...bills, ...fixedExpensesData].sort((a, b) => a.dueDay - b.dueDay);
+      });
+    });
+
+    return () => {
+      unsubscribeBills();
+      unsubscribeFixedExpenses();
+    };
   }, [user]);
+
 
   // ✅ Corectăm `useEffect`, adăugând `fetchReminders` în dependențe
   useEffect(() => {
-    if (user) fetchReminders();
-  }, [user, fetchReminders]);
+    if (user) setReminders(reminders);
+  }, [user, setReminders]);
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
+    <div className="space-y-4 p-4 md:p-6 bg-white rounded-md border m-2">
       <h2 className="text-sm font-semibold">Reminders</h2>
       <p className="text-xs text-gray-500">
         Le spese fisse le puoi creare/eliminare in 
-        <Link href="/dashboard/settings" className="text-blue-600 italic">
-          &quot;settings&quot;
+        <Link href="/dashboard/reminders" className="text-blue-600 italic">
+          &quot;Reminders&quot;
         </Link>
       </p>
       {reminders.length === 0 ? (
@@ -70,9 +86,9 @@ const SidebarReminders = () => {
           Nessuna bolletta o spesa fissa nelle vicinanze.
         </p>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-2">
           {reminders.map((reminder) => (
-            <li key={reminder.id} className="py-2 md:py-4 border-b">
+            <li key={reminder.id} className="py-2 md:py-4 border p-2 rounded-md">
               <div className="flex items-center gap-2 justify-between mb-2">
                 <div className="flex items-center gap-1">
                   {reminder.type === "bill" ? (

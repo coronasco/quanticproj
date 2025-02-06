@@ -115,6 +115,21 @@ const BillsReminder = () => {
         }
     };
 
+    // 🔹 Mark as unpaid
+    const handleMarkAsUnpaid = async (billId: string) => {
+        if (!user) return;
+        try {
+            await updateDoc(doc(db, `users/${user.uid}/bills`, billId), { isPaid: false });
+            setBillsList(prevBills =>
+                prevBills.map(bill =>
+                    bill.id === billId ? { ...bill, isPaid: false } : bill
+                )
+            );
+        } catch (error) {
+            console.error("Error marking bill as unpaid:", error);
+        }
+    };
+
 
     return (
         <div>
@@ -157,7 +172,7 @@ const BillsReminder = () => {
                 ) : (
                     <ul>
                         {billsList.map((bill) => (
-                            <li key={bill.id} className="flex justify-between items-center border p-4 md:p-6 bg-white mt-2 group">
+                            <li key={bill.id} className={`flex justify-between items-center border ${bill.isPaid ? "border-green-300" : ""} p-4 md:p-6 bg-white mt-2 group`}>
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
                                         <p className="font-semibold">{bill.name}</p>
@@ -174,11 +189,14 @@ const BillsReminder = () => {
                                 </div>
                                 <div className="flex gap-4 items-center">
                                     {bill.isPaid ? (
-                                        ''
-                                    ) : (
-                                        <Button size="sm" onClick={() => handleMarkAsPaid(bill.id)}>
+                                        <Button size="sm" variant='link' onClick={() => handleMarkAsUnpaid(bill.id)}>
                                             <Clock className="w-4 h-4 mr-2" />
-                                            Segna come pagato
+                                            Anulla
+                                        </Button>
+                                    ) : (
+                                        <Button size="sm" variant='outline' onClick={() => handleMarkAsPaid(bill.id)}>
+                                            <Clock className="w-4 h-4 mr-2" />
+                                            Paga
                                         </Button>
                                     )}
                                     <Button variant="destructive" onClick={() => handleDeleteBill(bill.id)} className="hidden group-hover:flex">

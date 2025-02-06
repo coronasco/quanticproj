@@ -84,10 +84,10 @@ const Analytics = () => {
         <div className="">
             <Card>
                 <CardHeader >
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col xl:flex-row gap-2 xl:items-center justify-between">
                         <div className="flex items-center gap-2">
                             <BarChart className="text-blue-500 w-5 h-5" />
-                            <CardTitle>Analisi Finanziaria</CardTitle>
+                            <CardTitle className="text-md">Analisi Finanziaria</CardTitle>
                         </div>
 
                         {/* 🔹 Month & Year Selectors */}
@@ -153,18 +153,22 @@ const Analytics = () => {
                             <p className="text-gray-600 text-sm">📅 Giorno più redditizio: {data.bestDay} {monthNames[selectedMonth - 1]}</p>
 
                             {/* 🔹 Dynamic Recommendations */}
-                            <Card className="p-4">
-                                <Lightbulb className="text-yellow-500 w-6 h-6" />
-                                <p className="text-sm font-semibold">Suggerimenti:</p>
-                                <ul className="text-gray-600 text-sm space-y-1">
-                                    {generateSuggestions().length > 0 ? (
-                                        generateSuggestions().map((suggestion, index) => (
-                                            <li key={index}>• {suggestion}</li>
-                                        ))
-                                    ) : (
-                                        <p className="text-green-600">Tutto sembra in ordine! Continua così!</p>
-                                    )}
-                                </ul>
+                            <Card className="p-4 flex gap-2">
+                                <div>
+                                    <Lightbulb className="text-yellow-500 w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold mb-1">Suggerimenti</p>
+                                    <ul className="text-gray-600 text-sm space-y-1">
+                                        {generateSuggestions().length > 0 ? (
+                                            generateSuggestions().map((suggestion, index) => (
+                                                <li key={index}>• {suggestion}</li>
+                                            ))
+                                        ) : (
+                                            <p className="text-green-600">Tutto sembra in ordine! Continua così!</p>
+                                        )}
+                                    </ul>
+                                </div>
                             </Card>
                         </div>
                     ) : (
