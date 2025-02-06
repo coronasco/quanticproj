@@ -60,8 +60,8 @@ const DailyMissions = () => {
       await updateDoc(statsRef, { xp: newXP });
 
       toast({
-        title: "Misiune Completată!",
-        description: `Ai câștigat ${completedMission.xp} XP!`,
+        title: "Missione compiuta!",
+        description: `Hai vinto ${completedMission.xp} XP!`,
       });
     }
   };
@@ -71,7 +71,7 @@ const DailyMissions = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ListChecks className="text-blue-500 w-5 h-5" />
-          Misiuni Zilnice
+          Missioni giornaliere
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -84,7 +84,7 @@ const DailyMissions = () => {
               <CheckCircle className="text-green-500 w-5 h-5" />
             ) : (
               <Button size="sm" onClick={() => completeMission(mission.id)}>
-                Completare
+                Completa
               </Button>
             )}
           </div>
