@@ -1,4 +1,5 @@
 import { Separator } from '@/components/ui/separator'
+import DailyMissions from '@/components/user/dailyMissions'
 import Gamification from '@/components/user/gamification'
 import UserProfile from '@/components/user/userProfile'
 
@@ -10,8 +11,8 @@ const Settings = () => {
       <UserProfile />
       <Separator className='my-4' />
       <Gamification />
-
-
+      <Separator className='my-4' />
+      <DailyMissions />
 
     </div>
   )
