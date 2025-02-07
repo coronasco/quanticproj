@@ -6,6 +6,8 @@ import { collection, onSnapshot, query, Timestamp, where } from "firebase/firest
 import { useAuth } from "@/context/authContext";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { usePremium } from "@/hooks/usePremium";
+import Premium from "../premium";
 
 // 🔹 Define colors for different expense categories
 const categoryColors: Record<string, string> = {
@@ -24,6 +26,7 @@ const monthNames = [
 const ExpenseCategoryBar = () => {
     const { user } = useAuth();
     const today = new Date();
+    const isPremium = usePremium();
 
     // 🔹 State for selected month and year
     const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth() + 1);
@@ -106,32 +109,40 @@ const ExpenseCategoryBar = () => {
                 </div>
             </CardHeader>
             <CardContent>
-                {/* 🔹 Display total expenses */}
-                <div className="w-full h-3 bg-gray-200 rounded-lg overflow-hidden flex">
-                    {categoryData.map((item) => (
-                        <div
-                            key={item.category}
-                            className="h-full"
-                            style={{
-                                width: `${(item.amount / totalExpenses) * 100}%`,
-                                backgroundColor: categoryColors[item.category] || "#CBD5E1",
-                            }}
-                            title={`${item.category}: ${item.amount.toFixed(2)}€`}
-                        />
-                    ))}
-                </div>
-                {/* 🔹 Show a legend for categories */}
-                <div className="mt-4 space-y-2">
-                    {categoryData.map((item) => (
-                        <div key={item.category} className="flex items-center gap-2 text-sm">
-                            <span
-                                className="inline-block w-2 h-2 rounded-full"
-                                style={{ backgroundColor: categoryColors[item.category] || "#CBD5E1" }}
-                            />
-                            <span>{item.category} - <strong>{item.amount.toFixed(2)}€</strong></span>
+                {isPremium ? 
+                    
+                    <div>
+                        {/* 🔹 Display total expenses */}
+                        <div className="w-full h-3 bg-gray-200 rounded-lg overflow-hidden flex">
+                            {categoryData.map((item) => (
+                                <div
+                                    key={item.category}
+                                    className="h-full"
+                                    style={{
+                                        width: `${(item.amount / totalExpenses) * 100}%`,
+                                        backgroundColor: categoryColors[item.category] || "#CBD5E1",
+                                    }}
+                                    title={`${item.category}: ${item.amount.toFixed(2)}€`}
+                                />
+                            ))}
                         </div>
-                    ))}
-                </div>
+                        {/* 🔹 Show a legend for categories */}
+                        <div className="mt-4 space-y-2">
+                            {categoryData.map((item) => (
+                                <div key={item.category} className="flex items-center gap-2 text-sm">
+                                    <span
+                                        className="inline-block w-2 h-2 rounded-full"
+                                        style={{ backgroundColor: categoryColors[item.category] || "#CBD5E1" }}
+                                    />
+                                    <span>{item.category} - <strong>{item.amount.toFixed(2)}€</strong></span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    :
+                    <Premium />
+                }
+                
             </CardContent>
         </Card>
     );

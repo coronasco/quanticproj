@@ -1,11 +1,13 @@
 import AddExpense from "@/components/addExpense";
 import AddIncome from "@/components/addIncome";
+import AdSpot from "@/components/adSpot";
 import Analytics from "@/components/dashboard/analytics";
 import CashFlow from "@/components/dashboard/cashFlow";
 import ExpenseCategoryBar from "@/components/dashboard/expenseCategoryBar";
 import FinancialPrediction from "@/components/dashboard/financialPrediction";
 import MonthlyGoal from "@/components/dashboard/monthlyGoal";
 import MonthlyProfitIncome from "@/components/dashboard/monthlyProfitIncome";
+import Trivia from "@/components/user/trivia";
 
 const Dashboard = () => {
 
@@ -28,6 +30,7 @@ const Dashboard = () => {
       {/* 🔹 Grid Layout pentru principalele componente */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <ExpenseCategoryBar />
+        
         <MonthlyGoal />
       </div>
 
@@ -37,8 +40,11 @@ const Dashboard = () => {
         <Analytics />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-        
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        <div className="grid col-span-2">
+          <Trivia />
+        </div>
+        <AdSpot />
       </div>
     </div>
   );

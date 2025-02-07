@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import Premium from "../premium";
 
 const MonthlyGoal = () => {
   const { user } = useAuth();
@@ -75,9 +76,7 @@ const MonthlyGoal = () => {
             {progress.toFixed(2)}€ / {goal.toFixed(2)}€
           </p>
           <Progress value={(progress / goal) * 100} className="mt-2" />
-        </> : <span className="text-sm text-gray-500">
-          Devi essere premium per usare questa funzione.
-        </span>
+        </> : <Premium />
         }
 
       </CardContent>

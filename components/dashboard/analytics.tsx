@@ -6,12 +6,15 @@ import { useAuth } from "@/context/authContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, TrendingDown, BarChart, Lightbulb, ArrowUpRight } from "lucide-react";
+import { usePremium } from "@/hooks/usePremium";
+import Premium from "../premium";
 
 const monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
 
 const Analytics = () => {
     const { user } = useAuth();
     const today = new Date();
+    const isPremium = usePremium()
 
     // 🔹 States for selected month & year
     const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
@@ -125,55 +128,61 @@ const Analytics = () => {
                 </CardHeader>
 
                 <CardContent>
-                    {data ? (
-                        <div className="space-y-4">
-                            {/* 🔹 Display financial summary */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <Card className="p-4">
-                                    <TrendingUp className="text-green-500 w-6 h-6" />
-                                    <p className="text-sm">Incassi</p>
-                                    <p className="text-xl font-bold">{data.totalIncome.toFixed(2)}€</p>
-                                </Card>
-                                <Card className="p-4">
-                                    <TrendingDown className="text-red-500 w-6 h-6" />
-                                    <p className="text-sm">Spese</p>
-                                    <p className="text-xl font-bold">{data.totalExpenses.toFixed(2)}€</p>
-                                </Card>
-                                <Card className="p-4 col-span-2">
-                                    <BarChart className="text-blue-500 w-6 h-6" />
-                                    <p className="text-sm">Profitto</p>
-                                    <p className={`text-xl font-bold ${data.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
-                                        {data.profit.toFixed(2)}€
-                                    </p>
-                                </Card>
-                            </div>
+                    {isPremium ?
+                        <div>
+                            {data ? (
+                                <div className="space-y-4">
+                                    {/* 🔹 Display financial summary */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <Card className="p-4">
+                                            <TrendingUp className="text-green-500 w-6 h-6" />
+                                            <p className="text-sm">Incassi</p>
+                                            <p className="text-xl font-bold">{data.totalIncome.toFixed(2)}€</p>
+                                        </Card>
+                                        <Card className="p-4">
+                                            <TrendingDown className="text-red-500 w-6 h-6" />
+                                            <p className="text-sm">Spese</p>
+                                            <p className="text-xl font-bold">{data.totalExpenses.toFixed(2)}€</p>
+                                        </Card>
+                                        <Card className="p-4 col-span-2">
+                                            <BarChart className="text-blue-500 w-6 h-6" />
+                                            <p className="text-sm">Profitto</p>
+                                            <p className={`text-xl font-bold ${data.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                                                {data.profit.toFixed(2)}€
+                                            </p>
+                                        </Card>
+                                    </div>
 
-                            {/* 🔹 Daily average and best day */}
-                            <p className="text-gray-600 text-sm">💰 Media giornaliera: {data.dailyAverage.toFixed(2)}€</p>
-                            <p className="text-gray-600 text-sm">📅 Giorno più redditizio: {data.bestDay} {monthNames[selectedMonth - 1]}</p>
+                                    {/* 🔹 Daily average and best day */}
+                                    <p className="text-gray-600 text-sm">📅 Giorno più redditizio: {data.bestDay} {monthNames[selectedMonth - 1]}</p>
 
-                            {/* 🔹 Dynamic Recommendations */}
-                            <Card className="p-4 flex gap-2">
-                                <div>
-                                    <Lightbulb className="text-yellow-500 w-5 h-5" />
+                                    {/* 🔹 Dynamic Recommendations */}
+                                    <Card className="p-4 flex gap-2">
+                                        <div>
+                                            <Lightbulb className="text-yellow-500 w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold mb-1">Suggerimenti</p>
+                                            <ul className="text-gray-600 text-sm space-y-1">
+                                                {generateSuggestions().length > 0 ? (
+                                                    generateSuggestions().map((suggestion, index) => (
+                                                        <li key={index}>• {suggestion}</li>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-green-600">Tutto sembra in ordine! Continua così!</p>
+                                                )}
+                                            </ul>
+                                        </div>
+                                    </Card>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-semibold mb-1">Suggerimenti</p>
-                                    <ul className="text-gray-600 text-sm space-y-1">
-                                        {generateSuggestions().length > 0 ? (
-                                            generateSuggestions().map((suggestion, index) => (
-                                                <li key={index}>• {suggestion}</li>
-                                            ))
-                                        ) : (
-                                            <p className="text-green-600">Tutto sembra in ordine! Continua così!</p>
-                                        )}
-                                    </ul>
-                                </div>
-                            </Card>
+                            ) : (
+                                <p>Caricamento dati...</p>
+                            )}
                         </div>
-                    ) : (
-                        <p>Caricamento dati...</p>
-                    )}
+                        :
+                        <Premium />
+                    }
+
                 </CardContent>
             </Card>
         </div>

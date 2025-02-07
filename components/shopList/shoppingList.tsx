@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { fetchShoppingItems, deleteShoppingItem, addShoppingItem } from "@/lib/shoppingService";
 import { fetchProducts } from "@/lib/shoppingService"; // Funcție care preia produsele existente
 import { useAuth } from "@/context/authContext";
+import { usePremium } from "@/hooks/usePremium";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import Premium from "../premium";
 
 const ShoppingList = () => {
     const { user } = useAuth();
+    const isPremium = usePremium()
     const [shoppingList, setShoppingList] = useState<{ id: string; name: string; price: number; vat: number; store?: string }[]>([]);
     const [products, setProducts] = useState<{ id: string; name: string; price: number; vat: number; store?: string }[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -66,7 +68,7 @@ const ShoppingList = () => {
     // 🔹 Șterge produsul din listă
     const handleDeleteItem = async (itemId: string) => {
         if (!user || !itemId) return;
-    
+
         try {
             await deleteShoppingItem(user.uid, itemId);
             setShoppingList((prev) => prev.filter((item) => item.id !== itemId)); // 🔹 Elimină vizual itemul după ștergere
@@ -74,8 +76,8 @@ const ShoppingList = () => {
             console.error("Eroare la ștergerea produsului:", error);
         }
     };
-    
-    
+
+
     // 🔹 Grupează produsele după magazin
     const groupedItems = shoppingList.reduce((acc, item) => {
         const store = item.store || "Negozio Sconosciuto";
@@ -86,14 +88,14 @@ const ShoppingList = () => {
 
     const handleAddToShoppingList = async () => {
         if (!user || !searchTerm.trim()) return;
-    
+
         const newItem = {
             name: searchTerm.trim(),
             price: 0,  // Inițial fără preț
             vat: 0,    // Inițial fără TVA
             store: "Negozio Sconosciuto" // Magazin necunoscut
         };
-    
+
         const savedItem = await addShoppingItem(user.uid, newItem); // 🔹 Returnează ID-ul Firebase
         if (savedItem) {
             setShoppingList((prev) => [...prev, { ...savedItem, vat: savedItem.vat ?? 0 }]); // 🔹 Adăugăm în listă cu ID-ul corect
@@ -102,7 +104,7 @@ const ShoppingList = () => {
         }
 
     };
-    
+
 
     // 🔹 Calculează totalul listei
     const totalPrice = shoppingList.reduce((sum, item) => sum + (item.price * (1 + item.vat / 100)), 0);
@@ -114,39 +116,47 @@ const ShoppingList = () => {
                     <CardTitle>Lista delle spese</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-col gap-3">
-                        {/* 🔹 Input de căutare produse */}
-                        <Input
-                            placeholder="Cerca prodotto..."
-                            value={searchTerm}
-                            onChange={(e) => handleSearch(e.target.value)}
-                        />
+                    {isPremium ?
+                        <div>
+                            <div className="flex flex-col gap-3">
+                                {/* 🔹 Input de căutare produse */}
+                                <Input
+                                    placeholder="Cerca prodotto..."
+                                    value={searchTerm}
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                />
 
-                        {/* 🔹 Dropdown pentru selectarea produselor existente */}
-                        {dropdownVisible && (
-                            <div className="border rounded-md bg-white shadow-md p-2">
-                                {!existingProduct && (<div className="p-2 text-sm text-gray-500 flex justify-between items-center">
-                                    <span>Questo prodotto non è salvato. Vuoi aggiungerlo alla lista?</span>
-                                    <button
-                                        onClick={handleAddToShoppingList}
-                                        className="bg-blue-500 text-white text-xs p-2 rounded-md hover:bg-blue-600"
-                                    >
-                                        Salva prodotto
-                                    </button>
-                                </div>)
-                                }
-                                {filteredProducts.map((item) => (
-                                    <div
-                                        key={item.name}
-                                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => handleAddItem({ name: item.name, price: item.price, vat: item.vat, store: item.store })}
-                                    >
-                                        {item.name} - {item.price * (1 + item.vat / 100)}€
+                                {/* 🔹 Dropdown pentru selectarea produselor existente */}
+                                {dropdownVisible && (
+                                    <div className="border rounded-md bg-white shadow-md p-2">
+                                        {!existingProduct && (<div className="p-2 text-sm text-gray-500 flex justify-between items-center">
+                                            <span>Questo prodotto non è salvato. Vuoi aggiungerlo alla lista?</span>
+                                            <button
+                                                onClick={handleAddToShoppingList}
+                                                className="bg-blue-500 text-white text-xs p-2 rounded-md hover:bg-blue-600"
+                                            >
+                                                Salva prodotto
+                                            </button>
+                                        </div>)
+                                        }
+                                        {filteredProducts.map((item) => (
+                                            <div
+                                                key={item.name}
+                                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                                onClick={() => handleAddItem({ name: item.name, price: item.price, vat: item.vat, store: item.store })}
+                                            >
+                                                {item.name} - {item.price * (1 + item.vat / 100)}€
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                        :
+                        <Premium />
+
+                    }
+
 
                     {/* 🔹 Lista de cumpărături grupată pe magazine */}
                     <div className="mt-6">

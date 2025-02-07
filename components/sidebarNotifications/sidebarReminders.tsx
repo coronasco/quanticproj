@@ -73,7 +73,7 @@ const SidebarReminders = () => {
   }, [user, setReminders]);
 
   return (
-    <div className="space-y-4 p-4 md:p-6 bg-white rounded-md border m-2">
+    <div className="space-y-4 p-4 md:p-6 bg-white rounded-md border">
       <h2 className="text-sm font-semibold">Reminders</h2>
       <p className="text-xs text-gray-500">
         Le spese fisse le puoi creare/eliminare in 

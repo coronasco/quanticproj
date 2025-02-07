@@ -7,6 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Skeleton } from "@/components/ui/skeleton";
 import SidebarReminders from "@/components/sidebarNotifications/sidebarReminders";
 import LeftNavigation from "@/components/leftNavigation";
+import Achievements from "@/components/user/achievements";
+import Gamification from "@/components/user/gamification";
 
 export default function DashboardLayout({
     children,
@@ -49,8 +51,16 @@ export default function DashboardLayout({
           <div className="m-2 bg-white rounded-lg border md:ml-[200px] w-full">
             {children}
           </div>
-          <div className="col-span-1 hidden lg:block">
+          <div className="hidden lg:flex flex-col gap-2 mt-2 mr-2">
             <SidebarReminders />
+            
+            <div className="p-2 bg-white rounded-md border">
+              <Achievements />
+            </div>
+            
+            <div>
+              <Gamification />
+            </div>
           </div>
         </main>
         <Toaster />   
